@@ -1,0 +1,57 @@
+export interface Education {
+  school: string;
+  degree: string;
+  year: string;
+  /** Grade point average, as printed on the CV. */
+  gpa?: string;
+}
+
+export interface SiteData {
+  name: string;
+  /** The document title, shared by the beach and the dive page. */
+  title: string;
+  positioning: string;
+  education: Education[];
+  path: string[];
+  location: string;
+  email: string;
+  /** The Stanford address the CV leads with. Kept alongside `email`, which is
+   *  the one that outlives the alumni forwarder. */
+  alumniEmail: string;
+  linkedin: string;
+  github: string;
+  /** The repository the CV links to by name, distinct from the profile above. */
+  githubPortfolio: string;
+  resume: string;
+  metaDescription: string;
+}
+
+export const site: SiteData = {
+  name: "Summer Olivia Royal",
+  title: "Summer Olivia Royal — AI for clinical data",
+  positioning: "I am passionate about building human-centered AI systems for clinical applications",
+  education: [
+    {
+      school: "Stanford University",
+      degree: "M.S. Computer Science, AI concentration",
+      year: "2026",
+      //gpa: "3.9",
+    },
+    {
+      school: "Stanford University",
+      degree: "B.S. Biomedical Computation",
+      year: "2025",
+      //gpa: "4.0",
+    },
+  ],
+  path: ["Honolulu", "Stanford", "Mountain View"],
+  location: "Mountain View, California",
+  email: "summerroyal25@gmail.com",
+  alumniEmail: "summerroyal@alumni.stanford.edu",
+  linkedin: "https://www.linkedin.com/in/summerroyal",
+  github: "https://github.com/summerroyal",
+  githubPortfolio: "https://github.com/summer-royal/github-portfolio",
+  resume: "/resume.pdf",
+  metaDescription:
+    "Summer Olivia Royal is a computer scientist working at the intersection of AI and medicine — RAG and LLM pipelines that surface chemotherapy neurotoxicity hidden in clinical notes.",
+};

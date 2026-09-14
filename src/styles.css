@@ -1,0 +1,1570 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Design system — "Bathymetry, pastel"
+ * abyss  #f2f2f2  soft off-white (base)
+ * shelf  #c8d8e4  pale blue (surfaces / tints)
+ * sound  #5b8b98  muted teal-blue (contours, rules, secondary text)
+ * bone   #2b6777  deep teal (primary text)
+ * signal #52ab98  green-teal accent (links, active nav, one hero element)
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-stamp: var(--stamp);
+  --color-stamp-ink: var(--stamp-ink);
+  --color-stamp-hover: var(--stamp-hover);
+
+  --color-abyss: var(--abyss);
+  --color-shelf: var(--shelf);
+  --color-sound: var(--sound);
+  --color-bone: var(--bone);
+  --color-signal: var(--signal);
+  --color-signal-ink: var(--signal-ink);
+
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-sans: "Public Sans", ui-sans-serif, system-ui, sans-serif;
+
+  --text-micro: 0.75rem;
+  --text-fine: 0.8125rem;
+  --text-base: 1rem;
+  --text-lede: 1.1875rem;
+  --text-h3: 1.375rem;
+  --text-h2: 1.875rem;
+  --text-h1: 2.75rem;
+  --text-display: 4rem;
+}
+
+:root {
+  --radius: 0.25rem;
+
+  --abyss: #f2f2f2;
+  --shelf: #c8d8e4;
+
+  /* The corner stamp sits over artwork that may be light or dark, so it keeps
+     one dark chip and one light ink at every depth. Never band-scoped. */
+  --stamp: #1e4853;
+  --stamp-ink: #f2f2f2;
+  --stamp-hover: #1a473c;
+
+  --sound: #5b8b98;
+  --bone: #2b6777;
+  --signal: #52ab98;
+  --signal-ink: #2f7f6c;
+
+  --background: var(--abyss);
+  --foreground: var(--bone);
+  --card: #ffffff;
+  --card-foreground: var(--bone);
+  --popover: #ffffff;
+  --popover-foreground: var(--bone);
+  --primary: var(--signal);
+  --primary-foreground: #ffffff;
+  --secondary: var(--shelf);
+  --secondary-foreground: var(--bone);
+  --muted: #e9edef;
+  --muted-foreground: #5b8b98;
+  --accent: var(--sound);
+  --accent-foreground: #ffffff;
+  --destructive: #c0574a;
+  --destructive-foreground: #ffffff;
+  --border: #c8d8e4;
+  --input: #c8d8e4;
+  --ring: var(--signal);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    /* Instant, not smooth: anchor and keyboard navigation must never wait on
+       an animation, and the pinned sections make this page long. */
+    scroll-behavior: auto;
+    scroll-padding-top: 5.5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.015em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--signal);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background: var(--signal);
+    color: var(--abyss);
+  }
+}
+
+@utility measure {
+  max-width: 66ch;
+}
+
+@utility shell {
+  width: 100%;
+  max-width: 68rem;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+@utility link-signal {
+  color: var(--signal-ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  text-decoration-color: color-mix(in oklch, var(--signal-ink) 45%, transparent);
+  transition: text-decoration-color 160ms ease;
+
+  &:hover {
+    text-decoration-color: var(--signal-ink);
+  }
+}
+
+/* One orchestrated page-load reveal (hero only) */
+@keyframes sounding-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.6rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@utility reveal {
+  animation: sounding-in 700ms cubic-bezier(0.22, 0.75, 0.3, 1) both;
+}
+
+/* =====================================================================
+ * The descent
+ *
+ * One axis, measured in metres (src/lib/depth.ts), decides three things:
+ * the background gradient, the text colours, and where the drifting
+ * objects sit. Each band paints itself as an ordinary static section
+ * background, so the gradient costs nothing per frame and is already
+ * correct under prefers-reduced-motion with no second code path.
+ *
+ * The water follows ONE curve down the whole page, and the curve was
+ * designed on its rate of change rather than on its endpoints: a steady
+ * ~3.3 dE per 1000px of scroll from the first screen to the last, with a
+ * single smooth acceleration through the `descent` band and nowhere else.
+ * The stops below are that curve sampled per band, closely enough that
+ * the straight-line interpolation CSS does between them never drifts
+ * half a just-noticeable difference off it. Nothing steps.
+ *
+ * What sets the shape: dark small type needs its water no darker than
+ * L*57, pale small type needs it no lighter than L*43, and no ink of any
+ * colour holds 4.5:1 in between. That 14-point gap is why a textless
+ * stretch has to exist at all — it is the only place the water is free
+ * to move through the middle. Widening `descent` is what buys the turn
+ * its gentle rate; the ink in Research darkens to reach down to L*57.
+ *
+ * Every colour below was solved against the water at its own position
+ * and checked: body text clears 4.5:1 at BOTH ends of the run it sits
+ * on, --signal (a hover border and a 1px rule, never type) clears 3:1,
+ * and object tints clear 3:1 at their depth.
+ * ===================================================================== */
+
+/* A white tile is paper, not water: it holds the pale-surface ink whatever
+   depth it is floating at. Without this the band's inverted text tokens land
+   near-white on a near-white card. */
+.paper {
+  --bone: #1e4853;
+  --sound: #436b75;
+  --muted-foreground: #496d77;
+  --signal-ink: #286d5d;
+  --signal: #38907c;
+  --border: #a5c2cf;
+}
+
+.depth-band {
+  position: relative;
+  /* --band-stops is the page-wide curve sampled across this band. --band-from
+     and --band-to are its ends, kept because other rules read them. */
+  background: linear-gradient(to bottom, var(--band-stops));
+}
+
+[data-band="hero"] {
+  /* The beach.
+   *
+   * Dry sand down the whole of the first screen, damp sand where the water has
+   * been, then the shallows — a faint light blue, cooler and cleaner than the
+   * sand, so the turn from beach to ocean is something you can actually see
+   * happen. The shallows at the foot are exactly the water the dive page
+   * opens on, so the tide lands the reader in the same colour it took them
+   * from.
+   *
+   * This is real sand rather than a tint of white, so it is dark enough that
+   * the ink solved against near-white no longer holds: the tokens below are
+   * re-solved against the sand, and the sand — not the shallows — is now the
+   * worst case, because it is the darkest ground in the band. Measured on the
+   * rendered page with the grain and the surface haze in place, not on the
+   * stops alone. */
+  --band-from: #ecdfc6;
+  --band-to: #d3e2e8;
+  /* The sand holds to 30%, under the banner and the name, and the turn to
+     water is fitted to the foot of the beach, which is where the tide comes
+     in. */
+  --band-stops: #ecdfc6 0%, #eaddc3 30%, #e5dcc8 55%, #dcded9 76%, #d3e2e8 100%;
+  --bone: #163c46;
+  --sound: #32545c;
+  --muted-foreground: #375c65;
+  --signal-ink: #1a5749;
+  --signal: #276f5e;
+  --border: #b3a184;
+}
+
+/* The grain of the sand.
+ *
+ * Two passes, because one alone never looks like sand: a fine grain for the
+ * tooth of it, and a coarser, sparser speckle over the top for the larger
+ * particles that catch the light. Both are contrast-stretched about their own
+ * mid-point rather than laid on more thickly, so the speckle is visible while
+ * the grey they average to costs the sand about a point of L* — which is
+ * folded into the tokens above.
+ *
+ * It fades out over the lower part of the band, where the sand gives way to
+ * water. It paints under the drifting objects and under the banner, which sit
+ * in the band's z-10 content layer. */
+[data-band="hero"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.075;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='c'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.42' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='3.4' intercept='-1.15'/%3E%3CfeFuncG type='linear' slope='3.4' intercept='-1.15'/%3E%3CfeFuncB type='linear' slope='3.4' intercept='-1.15'/%3E%3CfeFuncA type='linear' slope='0.55'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23c)'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='s'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='2.6' intercept='-0.8'/%3E%3CfeFuncG type='linear' slope='2.6' intercept='-0.8'/%3E%3CfeFuncB type='linear' slope='2.6' intercept='-0.8'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23s)'/%3E%3C/svg%3E");
+  -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 62%, transparent 88%);
+  mask-image: linear-gradient(to bottom, #000 0, #000 62%, transparent 88%);
+}
+
+[data-band="experience"] {
+  /* Held about four points of L* under the shallows the beach ends on, so the
+     section reads as water rather than sky. Ends short of where it used to:
+     Skills below takes the last sixth of the run, so the water arrives at
+     #9fbac8 — the tone Research opens on — one section later. */
+  --band-from: #c8d7dd;
+  --band-to: #a5becb;
+  --band-stops: #c8d7dd 0%, #a5becb 100%;
+  --bone: #0a2c36;
+  --sound: #26464e;
+  --muted-foreground: #2c4850;
+  --signal-ink: #0d473c;
+  --signal: #1a6857;
+  --border: #5e8496;
+}
+[data-band="skills"] {
+  /* Cut from the foot of Experience, so it keeps Experience's ink verbatim:
+     those tokens were solved against #9fbac8 — the darkest water in the
+     original run, and this band's own floor — so they clear 4.5:1 across
+     every tone here by construction. Two dE of water over a short section. */
+  --band-from: #a5becb;
+  --band-to: #9fbac8;
+  --band-stops: #a5becb 0%, #9fbac8 100%;
+  --bone: #0a2c36;
+  --sound: #26464e;
+  --muted-foreground: #2c4850;
+  --signal-ink: #0d473c;
+  --signal: #1a6857;
+  --border: #5e8496;
+}
+[data-band="research"] {
+  /* The ink is heaviest here: this band ends at the last water a dark
+     small type can sit on and still clear 4.5:1, so bone/sound/muted
+     close up on each other. That compression is the price of the turn
+     happening at a steady rate rather than all at once. */
+  --band-from: #9fbac8;
+  --band-to: #608da2;
+  --band-stops:
+    #9fbac8 0%, #97b4c4 12.5%, #8fb0c1 25%, #88aabd 37.5%, #80a5b8 50%, #79a0b5 62.5%, #729bb0 75%,
+    #6a95aa 87.5%, #608da2 100%;
+  --bone: #001017;
+  --sound: #062127;
+  --muted-foreground: #0d242b;
+  --signal-ink: #001e17;
+  --signal: #004437;
+  --border: #316075;
+}
+[data-band="descent"] {
+  /* The turn. Nothing is written here, so this is the only stretch
+     where the water is allowed to cross the mid-tones no ink can hold.
+     It inherits Research's tokens; none of them are used. */
+  --band-from: #608da2;
+  --band-to: #407185;
+  --band-stops: #608da2 0%, #407185 100%;
+  --bone: #001017;
+  --sound: #062127;
+  --muted-foreground: #0d242b;
+  --signal-ink: #001e17;
+  --signal: #004437;
+  --border: #316075;
+}
+[data-band="awards"] {
+  /* First band under the turn, so its ink is solved against the
+     lightest water any small type of its own sits on. */
+  --band-from: #407185;
+  --band-to: #2c5c6f;
+  --band-stops: #407185 0%, #336578 50%, #2c5c6f 100%;
+  --bone: #edf8fc;
+  --sound: #dcf6ff;
+  --muted-foreground: #cee9f4;
+  --signal-ink: #d1fff2;
+  --signal: #8ce9d1;
+  --border: #709db2;
+}
+[data-band="projects"] {
+  /* Holds the first seven tenths of what was one band; Clinical and Community
+     below carry the rest down to #123947, where About still opens. */
+  --band-from: #2c5c6f;
+  --band-to: #1a4453;
+  --band-stops: #2c5c6f 0%, #1a4453 100%;
+  --bone: #ecf7fd;
+  --sound: #bcd8e2;
+  --muted-foreground: #aecdd8;
+  --signal-ink: #8bebd0;
+  --signal: #66cdb4;
+  --border: #5f8597;
+}
+[data-band="clinical"],
+[data-band="community"] {
+  /* Both cut from the foot of Projects, so both keep its ink. Pale type is
+     solved against the LIGHTEST water it sits on, and Projects' lightest
+     (#2c5c6f) is lighter than anything here — every tone in these two bands
+     clears the contrast Projects already holds, with room to spare. */
+  --bone: #ecf7fd;
+  --sound: #bcd8e2;
+  --muted-foreground: #aecdd8;
+  --signal-ink: #8bebd0;
+  --signal: #66cdb4;
+  --border: #5f8597;
+}
+[data-band="clinical"] {
+  --band-from: #1a4453;
+  --band-to: #163e4d;
+  --band-stops: #1a4453 0%, #163e4d 100%;
+}
+[data-band="community"] {
+  --band-from: #163e4d;
+  --band-to: #123947;
+  --band-stops: #163e4d 0%, #123947 100%;
+}
+[data-band="about"] {
+  --band-from: #123947;
+  --band-to: #0b2935;
+  --band-stops: #123947 0%, #0b2935 100%;
+  --bone: #e1ecf2;
+  --sound: #a1c4d1;
+  --muted-foreground: #97bac6;
+  --signal-ink: #74d5ba;
+  --signal: #50bba1;
+  --border: #3f6171;
+}
+[data-band="reading"] {
+  --band-from: #0b2935;
+  --band-to: #09242e;
+  --band-stops: #0b2935 0%, #09242e 100%;
+  --bone: #d5e2e7;
+  --sound: #95bcc9;
+  --muted-foreground: #8cb1c0;
+  --signal-ink: #66ccb1;
+  --signal: #4cb19a;
+  --border: #385562;
+}
+[data-band="footer"] {
+  --band-from: #09242e;
+  --band-to: #09222d;
+  --band-stops: #09242e 0%, #09222d 100%;
+  --bone: #cfe0e7;
+  --sound: #92bac9;
+  --muted-foreground: #86b0bf;
+  --signal-ink: #64c9ae;
+  --signal: #4caf98;
+  --border: #37515e;
+}
+
+/* The turnover. It is long on purpose: this is the only stretch of the page
+   with nothing written on it, so it is the only stretch where the water may
+   cross the mid-tones, and giving it a full screen is what lets it cross them
+   at a rate close to the rest of the descent instead of in one cut. It takes
+   its gradient from --band-stops like every other band. */
+.depth-band.descent-band {
+  min-height: 100svh;
+  padding-top: 1.5rem;
+}
+@media (max-width: 767.98px) {
+  .depth-band.descent-band {
+    min-height: 72svh;
+  }
+}
+
+/* ---------------------------------------------------------------------
+ * Navigation
+ *
+ * The bar crosses every band, so it carries its own solved palette and
+ * changes over as it descends. It is 88% its own colour over the water,
+ * which means the colour has to keep up with the water or the bar starts
+ * reading as a block laid over the page: each band is cut into sub-bands
+ * of about 5 dE (the counts live in NAV_STEPS in Nav.tsx), holding the
+ * bar within ~2.5 dE of the water behind it the whole way down. Through
+ * the turn it is allowed to run slightly ahead of the water, because the
+ * water there passes tones no ink holds at 4.5:1 and the bar carries type.
+ * ------------------------------------------------------------------ */
+
+.site-nav {
+  background-color: color-mix(in srgb, var(--nav-bg) 88%, transparent);
+  border-bottom: 1px solid var(--nav-line);
+  transition:
+    background-color 320ms ease,
+    border-color 320ms ease;
+}
+.site-nav a {
+  transition: color 320ms ease;
+}
+.site-nav-brand {
+  color: var(--nav-fg);
+}
+.site-nav-link {
+  color: var(--nav-dim);
+}
+.site-nav-link:hover {
+  color: var(--nav-fg);
+}
+.site-nav-link[aria-current="true"] {
+  color: var(--nav-on);
+}
+
+[data-nav-band="experience-0"] {
+  --nav-bg: #bccdd6;
+  --nav-fg: #153a43;
+  --nav-dim: #32555d;
+  --nav-on: #135647;
+  --nav-line: #7094a2;
+}
+[data-nav-band="experience-1"] {
+  --nav-bg: #a8c0cd;
+  --nav-fg: #0a2f39;
+  --nav-dim: #294b54;
+  --nav-on: #034c3e;
+  --nav-line: #658897;
+}
+[data-nav-band="skills-0"] {
+  --nav-bg: #a2bdca;
+  --nav-fg: #0a2b34;
+  --nav-dim: #27474f;
+  --nav-on: #0a493c;
+  --nav-line: #5e8496;
+}
+[data-nav-band="research-0"] {
+  --nav-bg: #97b4c4;
+  --nav-fg: #0a2329;
+  --nav-dim: #254048;
+  --nav-on: #0e4237;
+  --nav-line: #517f93;
+}
+[data-nav-band="research-1"] {
+  --nav-bg: #88aabd;
+  --nav-fg: #001217;
+  --nav-dim: #1d3940;
+  --nav-on: #01392e;
+  --nav-line: #49768b;
+}
+[data-nav-band="research-2"] {
+  --nav-bg: #79a0b5;
+  --nav-fg: #001016;
+  --nav-dim: #19353c;
+  --nav-on: #002f24;
+  --nav-line: #416d81;
+}
+[data-nav-band="research-3"] {
+  --nav-bg: #6a95aa;
+  --nav-fg: #001016;
+  --nav-dim: #0f2b32;
+  --nav-on: #00221b;
+  --nav-line: #386478;
+}
+[data-nav-band="descent-0"] {
+  --nav-bg: #59879d;
+  --nav-fg: #0e0d0d;
+  --nav-dim: #09181c;
+  --nav-on: #00120e;
+  --nav-line: #2c596c;
+}
+[data-nav-band="descent-1"] {
+  --nav-bg: #437489;
+  --nav-fg: #f6f6f5;
+  --nav-dim: #e4f8fe;
+  --nav-on: #d2fff4;
+  --nav-line: #79a8bd;
+}
+[data-nav-band="awards-0"] {
+  --nav-bg: #386a7d;
+  --nav-fg: #f6f6f5;
+  --nav-dim: #cfe8ee;
+  --nav-on: #c4feef;
+  --nav-line: #6f9bb0;
+}
+[data-nav-band="awards-1"] {
+  --nav-bg: #2f6073;
+  --nav-fg: #f6f6f5;
+  --nav-dim: #c0d8df;
+  --nav-on: #b4eddf;
+  --nav-line: #648fa4;
+}
+[data-nav-band="projects-0"] {
+  --nav-bg: #265668;
+  --nav-fg: #eaf8fc;
+  --nav-dim: #abcad3;
+  --nav-on: #90e1ce;
+  --nav-line: #5e8396;
+}
+[data-nav-band="projects-1"] {
+  --nav-bg: #1d4a5b;
+  --nav-fg: #eaf8fc;
+  --nav-dim: #a4c4cc;
+  --nav-on: #89dac7;
+  --nav-line: #517689;
+}
+[data-nav-band="clinical-0"] {
+  --nav-bg: #184150;
+  --nav-fg: #eaf8fc;
+  --nav-dim: #a4c4cc;
+  --nav-on: #89dac7;
+  --nav-line: #486e81;
+}
+[data-nav-band="community-0"] {
+  --nav-bg: #143b4a;
+  --nav-fg: #e9f7fb;
+  --nav-dim: #a2c3cb;
+  --nav-on: #88d9c6;
+  --nav-line: #456b7d;
+}
+[data-nav-band="about-0"] {
+  --nav-bg: #103542;
+  --nav-fg: #cff0f8;
+  --nav-dim: #94bcc7;
+  --nav-on: #6bd3ba;
+  --nav-line: #3f6070;
+}
+[data-nav-band="about-1"] {
+  --nav-bg: #0d2d39;
+  --nav-fg: #c4e5ed;
+  --nav-dim: #8bb2be;
+  --nav-on: #60c9b0;
+  --nav-line: #385a69;
+}
+[data-nav-band="reading-0"] {
+  --nav-bg: #0a2632;
+  --nav-fg: #b0ddea;
+  --nav-dim: #7facb8;
+  --nav-on: #53c3a7;
+  --nav-line: #375462;
+}
+[data-nav-band="footer-0"] {
+  --nav-bg: #09232e;
+  --nav-fg: #a9dbeb;
+  --nav-dim: #7baab8;
+  --nav-on: #55c0a5;
+  --nav-line: #36515e;
+}
+
+/* ---------------------------------------------------------------------
+ * Drifting objects
+ *
+ * Only transforms and opacity move. The slot is placed once and never
+ * animated; the ambient bob is a compositor-only keyframe; the parallax
+ * pass is a scroll-derived transform. Objects unmount well outside the
+ * viewport, which is also what drops their `will-change`.
+ * ------------------------------------------------------------------ */
+
+.drift-field {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  /* Clip sideways so a wide object can never widen the page; leave the
+     vertical alone so objects drift across band seams uncut. */
+  overflow-x: clip;
+  overflow-y: visible;
+}
+
+.drift-slot {
+  position: absolute;
+}
+
+@keyframes object-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(7px, -16px, 0) rotate(2.5deg);
+  }
+}
+
+.drift-bob {
+  animation: object-drift 16s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Stands exactly where the illustration will go, at its size, position,
+   rotation and tint. Drop a file at the manifest's `src` and it takes
+   over — no component change. */
+.drift-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  text-align: center;
+  border: 1px dashed currentColor;
+  border-radius: 3px;
+}
+
+.drift-placeholder-label {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  line-height: 1.25;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+/* A photograph in the field: a print rather than an illustration. Matted and
+   cropped to fill, and never blurred — a soft, half-transparent photograph of
+   a person reads as a broken image rather than as distance, so a print's depth
+   is carried by its parallax rate alone. */
+.drift-photo {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 2px;
+  border: 1px solid color-mix(in srgb, var(--border) 85%, transparent);
+  background: color-mix(in srgb, var(--shelf) 12%, transparent);
+  box-shadow: 0 18px 42px -24px rgb(0 0 0 / 0.75);
+}
+
+/* The place, noted under the print. Sits outside the frame, so it never eats
+   into the photograph's box. */
+.drift-photo-caption {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  line-height: 1.25;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sound);
+}
+
+/* The photographs float in the gutter beside the About prose. Below 1024px the
+   prose takes the full width and there is no gutter, so the slots stand down
+   and the About section prints the same photographs in the page instead. */
+@media (max-width: 1023.98px) {
+  .drift-slot[data-photo] {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------------
+ * The travel wall
+ *
+ * The prints at the foot of About. A column layout rather than a grid:
+ * the photographs are portrait and landscape both, and columns let each
+ * one keep its own ratio instead of being cropped to a common box. The
+ * count of columns is a media query, so the wall is laid out correctly on
+ * the server and does not move when hydration lands.
+ *
+ * Everything that moves is a transform — each print rises, drifts sideways
+ * and turns on a spring as the scroll passes it, at rates that differ from
+ * its neighbours', which is what makes the wall shift and rock rather than
+ * slide as one plane.
+ *
+ * The gaps here are set by those rates. Both the space under a print and
+ * the space between columns has to be wider than the most two neighbours
+ * can ever close on each other, or a print swings into the one beside it —
+ * see TRAVEL, SWAY and ROLL in TravelWall.tsx.
+ * ------------------------------------------------------------------ */
+
+.travel-wall {
+  column-count: 2;
+  column-gap: 1.5rem;
+}
+
+.travel-print {
+  /* An atomic inline-level box, and the reason the wall is laid out with
+     one. `break-inside: avoid` is the obvious way to keep a print whole and
+     is not honoured by every engine in a column layout; where it is ignored
+     a print is split down the column boundary, leaving its top slice
+     stranded at the foot of the previous column. Nothing can fragment an
+     atomic inline-level box, so the print moves to the next column entire.
+     The `break-inside` below still stands, for the engines that do read it. */
+  display: inline-block;
+  width: 100%;
+  vertical-align: top;
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  /* Wider than twice the largest travel, so two prints in one column can
+     lean towards each other for a whole scroll and still never touch.
+     Narrow viewports halve the travel, so they can halve this too. */
+  margin-bottom: 3rem;
+}
+
+/* The three prints that drift in the About gutter from 1024px up stand down
+   here, so the same photograph is never on screen twice. Below that width
+   there is no gutter and the wall carries all seventeen. This is an attribute
+   rather than a `lg:hidden` class because the `display` above would otherwise
+   have to win a cascade argument with a utility to be applied at all. */
+@media (min-width: 1024px) {
+  .travel-print[data-gutter] {
+    display: none;
+  }
+}
+
+@media (min-width: 640px) {
+  .travel-wall {
+    column-count: 3;
+    column-gap: 2rem;
+  }
+
+  .travel-print {
+    margin-bottom: 5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .travel-wall {
+    column-count: 4;
+    column-gap: 2.5rem;
+  }
+}
+
+/* Matted the same way as a print drifting in the field, so the wall and the
+   gutter are visibly the same set of photographs. */
+.travel-print-frame {
+  overflow: hidden;
+  border-radius: 2px;
+  border: 1px solid color-mix(in srgb, var(--border) 85%, transparent);
+  background: color-mix(in srgb, var(--shelf) 12%, transparent);
+  box-shadow: 0 18px 42px -24px rgb(0 0 0 / 0.75);
+}
+
+.travel-print-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* The place, noted under the print — the same note the drifting prints carry. */
+.travel-print-caption {
+  margin-top: 0.6rem;
+  text-align: center;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  line-height: 1.3;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sound);
+}
+
+/* ---------------------------------------------------------------------
+ * The work reel
+ *
+ * Photographs from work, passing under the Experience heading. The track
+ * holds the run twice and slides left by exactly half its own width on a
+ * linear loop, so the second copy lands where the first began and the join
+ * never shows. It moves on its own clock rather than on the scroll.
+ *
+ * Every frame is the same height and takes its width from the file's own
+ * ratio, so nothing is cropped. Hovering holds the reel still, so a caption
+ * can be read, and an arrow at either end steps it back or on by a set.
+ * Under prefers-reduced-motion it does not move at all: the repeats stand
+ * down and it becomes a strip that scrolls sideways by hand or by arrow.
+ * ------------------------------------------------------------------ */
+
+/* Holds the reel and its arrows. The arrows sit outside the reel's mask and
+   overflow, which would otherwise fade and clip them. */
+.work-reel-shell {
+  --reel-h: 11rem;
+  --reel-gap: 1rem;
+  position: relative;
+}
+
+@media (min-width: 640px) {
+  .work-reel-shell {
+    --reel-h: 14rem;
+    --reel-gap: 1.5rem;
+  }
+}
+
+.work-reel {
+  overflow: hidden;
+  /* Room below for the frame's shadow, which the overflow would cut off. */
+  padding-block: 0.25rem 1.5rem;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+}
+
+/* Centred on the frames, not on frames and captions together, and set over
+   the fade at either end so they cover as little of a photograph as they can. */
+.work-reel-arrow {
+  position: absolute;
+  top: calc(0.25rem + var(--reel-h) / 2);
+  translate: 0 -50%;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+  background: color-mix(in srgb, var(--band-from, var(--background)) 80%, transparent);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  color: var(--bone);
+  cursor: pointer;
+  box-shadow: 0 12px 28px -18px rgb(3 40 51 / 0.85);
+  transition:
+    background-color 200ms ease,
+    translate 200ms ease;
+}
+
+.work-reel-arrow[data-side="prev"] {
+  left: 0;
+}
+
+.work-reel-arrow[data-side="next"] {
+  right: 0;
+}
+
+/* It sinks under the pointer rather than lifting, as the dive button does. */
+@media (hover: hover) {
+  .work-reel-arrow:hover {
+    background: var(--band-from, var(--background));
+    translate: 0 calc(-50% + 2px);
+  }
+}
+
+.work-reel-arrow:active {
+  translate: 0 calc(-50% + 3px);
+}
+
+.work-reel-arrow svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.work-reel-track {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--reel-gap);
+  width: max-content;
+  /* The gap after the last frame. With it, half the track is exactly one run
+     plus the gap that follows it — the distance the loop travels to line up. */
+  padding-inline-end: var(--reel-gap);
+  animation: work-reel-pass var(--reel-seconds, 40s) linear infinite;
+}
+
+@keyframes work-reel-pass {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* Hover only where there is a real pointer: on touch a tap would leave the
+   reel stuck until the next tap somewhere else. The arrows count as the
+   reel, so a set stepped to by pointer holds still to be looked at. */
+@media (hover: hover) {
+  .work-reel-shell:hover .work-reel-track {
+    animation-play-state: paused;
+  }
+}
+
+/* The same for a set stepped to from the keyboard, while the arrow has focus. */
+.work-reel-shell:has(.work-reel-arrow:focus-visible) .work-reel-track {
+  animation-play-state: paused;
+}
+
+.work-reel-item {
+  flex: none;
+  width: calc(var(--reel-h) * var(--aspect));
+}
+
+/* Matted the same way as the travel prints. */
+.work-reel-frame {
+  height: var(--reel-h);
+  overflow: hidden;
+  border-radius: 2px;
+  border: 1px solid color-mix(in srgb, var(--border) 85%, transparent);
+  background: color-mix(in srgb, var(--shelf) 12%, transparent);
+  box-shadow: 0 18px 42px -24px rgb(0 0 0 / 0.75);
+}
+
+.work-reel-frame img,
+.work-reel-frame video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.work-reel-caption {
+  margin-top: 0.6rem;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--muted-foreground);
+}
+
+.work-reel-bold {
+  font-weight: 600;
+  color: var(--bone);
+}
+
+/* ---------------------------------------------------------------------
+ * Experience pictures
+ *
+ * A watermark hung from the rule under a role's header. Straight along the
+ * top and down the right; the left edge is a quarter-ellipse centred on the
+ * top-right corner, so the picture is widest against the rule and sweeps in
+ * to nothing at its foot. It is never solid: strongest at its right edge and
+ * clearing steadily towards the left, so it has all but gone by the time it
+ * reaches the writing. The illustrations keep their subject in the top right,
+ * the one part of the frame that survives both the curve and the fade.
+ *
+ * Its right edge stops where the rule does, so the two end together. From
+ * 1024px up it sits over the right of the entry, behind the writing. Below
+ * that the writing takes the full width, so the picture joins the flow above
+ * it instead.
+ * ------------------------------------------------------------------ */
+
+.role-body {
+  --picture-w: 30rem;
+  --picture-h: 26rem;
+  position: relative;
+  /* Holds the first line's top margin inside, so the picture hangs from the
+     rule itself rather than from that margin. */
+  display: flow-root;
+}
+
+.role-picture {
+  position: relative;
+  width: min(100%, var(--picture-w));
+  /* Cut short in the flow. The illustrations are drawn in the top of their
+     board, so a narrow screen keeps the subject and gives back the empty foot
+     rather than opening a gap between the header and the writing. */
+  aspect-ratio: 30 / 19;
+  margin-left: auto;
+}
+
+.role-picture img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: right top;
+  clip-path: ellipse(100% 100% at 100% 0);
+  -webkit-mask-image: linear-gradient(
+    to left,
+    rgb(0 0 0 / 0.62),
+    rgb(0 0 0 / 0.3) 48%,
+    transparent 92%
+  );
+  mask-image: linear-gradient(
+    to left,
+    rgb(0 0 0 / 0.62),
+    rgb(0 0 0 / 0.3) 48%,
+    transparent 92%
+  );
+}
+
+@media screen and (min-width: 1024px) {
+  /* Only the top two-thirds is held open. That is where the illustrations are
+     drawn; below it is nothing but the tail of the soundings, which may hang
+     into the gap under a short entry without reaching the next header. */
+  .role-body[data-pictured] {
+    min-height: calc(var(--picture-h) * 0.65);
+  }
+
+  .role-picture {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: var(--picture-w);
+    height: var(--picture-h);
+    aspect-ratio: auto;
+    margin: 0;
+    pointer-events: none;
+  }
+}
+
+@media print {
+  .role-picture {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work-reel {
+    overflow-x: auto;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .work-reel-track {
+    animation: none;
+  }
+
+  .work-reel-item[data-echo] {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------------
+ * The pinned moment
+ *
+ * The pipeline pin is `position: sticky`, so the page always answers the
+ * scroll it is given: flick past and you pass it at full speed. The extra
+ * height only exists on a wide viewport with motion allowed, which is why
+ * this is a media query and not a JavaScript decision — it is correct on
+ * the server and there is no layout shift when hydration lands.
+ * ------------------------------------------------------------------ */
+
+.pipeline-track {
+  position: relative;
+  margin-top: 3rem;
+}
+
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+  /* One viewport per stage, plus a little to arrive and settle. */
+  .pipeline-track {
+    min-height: 340vh;
+    min-height: 340svh;
+  }
+
+  .pipeline-stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.25rem;
+    padding-top: 3.5rem;
+    padding-bottom: 1rem;
+  }
+}
+
+/* ---------------------------------------------------------------------
+ * The beach
+ *
+ * The first page is the beach and nothing below it — Experience is on the
+ * far side of the dive, not further down. On a wide viewport the stage is
+ * a full screen tall with the identity sitting high in it, so once the
+ * banner has scrolled away the name sits close under the top of the screen,
+ * the button is in view, and the water's edge runs along the foot.
+ * ------------------------------------------------------------------ */
+
+.beach-stage {
+  position: relative;
+  /* The haze runs past both ends of the stage; this is where it stops. */
+  overflow: hidden;
+}
+
+/* A warm haze over dry sand — sun sitting on the beach, with the shallows
+ * washing in below it. It is kept at low alpha so the sand and its grain read
+ * straight through. Wide viewports only; the phone beach is lit by the sand
+ * alone. */
+.hero-surface {
+  display: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -12%;
+  height: 155%;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, #fff6e2 40%, transparent) 0%,
+    color-mix(in srgb, #fdf1dc 20%, transparent) 9%,
+    /* Held light and held back: too much cyan here mixes with the sand into
+         a grey-green, and the first screen has to stay beach. */
+    color-mix(in srgb, #dcedea 26%, transparent) 46%,
+    transparent 74%
+  );
+}
+
+@media (min-width: 768px) {
+  /* The identity sits high in the stage rather than centred in it, so the name
+     follows close on the banner. */
+  .beach-stage {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    min-height: 100vh;
+    min-height: 100svh;
+    padding-top: 9vh;
+    padding-top: 9svh;
+  }
+
+  .hero-surface {
+    display: block;
+  }
+}
+
+/* ---------------------------------------------------------------------
+ * The dive
+ *
+ * One button at the foot of the beach, and the tide it lets go.
+ *
+ * The wash is a single sheet of water travelling down the viewport, leading
+ * edge first. Only its transform and opacity animate; the foam, the lace and
+ * the water body are painted once and carried along, so the whole thing is
+ * compositor work over a page that is scrolling at the same time. It is
+ * translucent behind the crest on purpose — the point is to watch the page
+ * move underneath rather than to hide the cut.
+ * ------------------------------------------------------------------ */
+
+.dive-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  border-radius: 999px;
+  padding: 1.25rem 3.25rem;
+  background: var(--stamp);
+  color: var(--stamp-ink);
+  font-family: var(--font-sans);
+  font-size: 1.375rem;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 22px 46px -22px rgb(3 40 51 / 0.85);
+  transition:
+    background-color 200ms ease,
+    transform 200ms ease,
+    box-shadow 200ms ease;
+}
+
+@media (max-width: 767.98px) {
+  .dive-button {
+    padding: 1.05rem 2.4rem;
+    font-size: 1.15rem;
+  }
+}
+
+/* A ring going out from it, the way a ring goes out from something dropped in
+   water. It is what makes the button read as the thing to press without any
+   of it being loud. */
+.dive-button::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid color-mix(in srgb, var(--stamp) 55%, transparent);
+  animation: dive-button-ring 3.4s cubic-bezier(0.2, 0.6, 0.35, 1) infinite;
+  pointer-events: none;
+}
+
+@keyframes dive-button-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  70%,
+  100% {
+    transform: scale(1.22);
+    opacity: 0;
+  }
+}
+
+/* It sinks under the pointer rather than lifting: everything on this page
+   moves down. */
+.dive-button:hover {
+  background: var(--stamp-hover);
+  transform: translateY(2px);
+  box-shadow: 0 14px 32px -20px rgb(3 40 51 / 0.9);
+}
+
+.dive-button:active {
+  transform: translateY(4px);
+}
+
+.dive-button-arrow {
+  width: 1.5rem;
+  height: 1.5rem;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  animation: dive-arrow-bob 2.6s ease-in-out infinite;
+}
+
+@keyframes dive-arrow-bob {
+  0%,
+  100% {
+    transform: translateY(-2px);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+}
+
+.dive-tide {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* The tide comes UP: the ocean is below on this page and the sand is above, so
+   the water rises to meet the reader rather than falling on them.
+ *
+ * The whole painted composition is flipped once with scaleY(-1) rather than
+ * rebuilt upside down. Everything downstream keeps its meaning under the flip
+ * — the foam band still leads, the water still thins behind it, the spray
+ * still runs ahead — because all of it is defined relative to the leading
+ * edge, and the flip only changes which way that edge points.
+ *
+ * Starts a hair below the viewport and leaves a hair above it. The easing
+ * gathers, runs, and settles, the way a wave does — near enough to even
+ * through the middle that the crest is watchable on the way across, and slow
+ * at the end so the water drains rather than snapping away. The duration comes
+ * from the component, which owns it. */
+.dive-tide-sheet {
+  position: absolute;
+  inset: 0;
+  will-change: transform, opacity;
+  animation: dive-tide-sweep var(--tide-ms, 4200ms) cubic-bezier(0.45, 0.05, 0.3, 1) forwards;
+}
+
+@keyframes dive-tide-sweep {
+  0% {
+    transform: translate3d(0, 102%, 0) scaleY(-1);
+    opacity: 0;
+  }
+  6% {
+    opacity: 1;
+  }
+  72% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, -104%, 0) scaleY(-1);
+    opacity: 0;
+  }
+}
+
+/* The water: the shallows of the reference, a clean turquoise, sat well back
+   in alpha so the page reads through it. It runs the full height of the sheet
+   and right down behind the foam — the page has to stay visible moving
+   underneath, or the wash becomes a curtain over a cut rather than water
+   carrying the reader. */
+.dive-tide-water {
+  position: absolute;
+  inset: 0 0 92px;
+  background: linear-gradient(
+    to bottom,
+    rgb(196 232 230 / 0) 0%,
+    rgb(142 216 208 / 0.26) 28%,
+    rgb(88 204 194 / 0.52) 56%,
+    rgb(72 198 187 / 0.72) 78%,
+    rgb(124 218 208 / 0.8) 92%,
+    rgb(184 236 228 / 0.82) 100%
+  );
+}
+
+/* Wider than the sheet so the drift never walks an edge into view. */
+.dive-tide-crest {
+  position: absolute;
+  left: -6%;
+  right: -6%;
+  bottom: 0;
+  height: 300px;
+  animation: dive-crest-drift var(--tide-ms, 4200ms) ease-out forwards;
+}
+
+/* Each wave is a closed path filled from the top of the box down to its own
+   ragged edge, which on its own would read as a white slab. The mask is what
+   turns the stack into surf: the foam is solid at its front edge and thins to
+   nothing going back, dissolving into the turquoise instead of ending on a
+   straight top. */
+.dive-tide-crest svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgb(0 0 0 / 0.14) 26%,
+    rgb(0 0 0 / 0.55) 46%,
+    #000 62%,
+    #000 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgb(0 0 0 / 0.14) 26%,
+    rgb(0 0 0 / 0.55) 46%,
+    #000 62%,
+    #000 100%
+  );
+}
+
+@keyframes dive-crest-drift {
+  from {
+    transform: translate3d(-2.5%, 0, 0) scaleY(0.94);
+  }
+  to {
+    transform: translate3d(1.5%, 0, 0) scaleY(1.08);
+  }
+}
+
+/* Furthest up and softest: the wash still draining off the last wave. */
+.dive-tide-wave-wash {
+  fill: rgb(226 248 244 / 0.42);
+}
+
+/* The body of the foam. */
+.dive-tide-wave-body {
+  fill: rgb(240 252 250 / 0.6);
+}
+
+/* The lip at the front, the brightest thing in the frame. */
+.dive-tide-wave-lip {
+  fill: rgb(255 255 255 / 0.9);
+}
+
+/* The lace worked into the foam.
+ *
+ * Turbulence rather than a grid of dots: a dot grid at any spacing reads as a
+ * pattern the moment it is large enough to see, and foam has no spacing. Two
+ * passes — open clumps and fine bubbles — each thresholded out of noise so
+ * what lands is irregular holes and clots. Tiled at fixed pixel sizes so the
+ * bubbles stay the same size whatever the viewport is, and stitched so the
+ * tiles join invisibly. */
+.dive-tide-lace {
+  position: absolute;
+  inset: 0;
+  opacity: 0.85;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.13' numOctaves='3' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 3.1 0 0 0 -1.55'/%3E%3C/filter%3E%3Crect width='300' height='200' filter='url(%23b)'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='520' height='320'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.03' numOctaves='4' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 2.2 0 0 0 -0.92'/%3E%3C/filter%3E%3Crect width='520' height='320' filter='url(%23f)'/%3E%3C/svg%3E");
+  background-size:
+    300px 200px,
+    520px 320px;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 34%,
+    #000 58%,
+    #000 82%,
+    transparent 98%
+  );
+  mask-image: linear-gradient(to bottom, transparent 34%, #000 58%, #000 82%, transparent 98%);
+}
+
+/* Foam thrown out ahead of the lip: sparse, detached clots on the bare page,
+   thinning to nothing. Without them the edge reads as a shape with a boundary
+   rather than as water running onto something. */
+.dive-tide-ahead {
+  position: absolute;
+  inset: 0;
+  opacity: 0.6;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='520' height='320'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.03' numOctaves='4' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 2.2 0 0 0 -1.28'/%3E%3C/filter%3E%3Crect width='520' height='320' filter='url(%23f)'/%3E%3C/svg%3E");
+  background-size: 420px 260px;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 68%, #000 88%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 68%, #000 88%, transparent 100%);
+}
+
+@media (max-width: 767.98px) {
+  .dive-tide-water {
+    inset: 0 0 58px;
+  }
+  .dive-tide-crest {
+    height: 190px;
+  }
+}
+
+/* ---------------------------------------------------------------------
+ * The pipeline diagram
+ * ------------------------------------------------------------------ */
+
+.pipeline-still {
+  margin-top: 3rem;
+}
+
+.pipeline-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 56svh;
+  margin-block: 0.5rem;
+}
+
+.pipeline-node {
+  font-family: var(--font-display);
+  font-size: 22px;
+  fill: var(--bone);
+}
+.pipeline-micro {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  fill: var(--sound);
+}
+.pipeline-row {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  fill: var(--bone);
+}
+.pipeline-row-value {
+  fill: var(--muted-foreground);
+}
+
+.pipeline-rail {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.25rem;
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+}
+
+.pipeline-rail li {
+  display: flex;
+  gap: 0.6rem;
+  color: var(--muted-foreground);
+  transition: color 260ms ease;
+}
+
+.pipeline-rail li[data-active="true"] {
+  color: var(--bone);
+}
+
+.pipeline-rail-index {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 0.7rem;
+}
+
+.pipeline-rail-label {
+  display: block;
+  font-size: 0.875rem;
+  color: currentColor;
+}
+
+.pipeline-rail-note {
+  display: block;
+  font-size: 0.8125rem;
+  color: var(--muted-foreground);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drift-bob {
+    animation: none !important;
+    will-change: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+@media print {
+  :root {
+    --background: white;
+    --foreground: #111;
+    --muted-foreground: #444;
+    --border: #bbb;
+    --signal: #a8431f;
+  }
+  body {
+    background: white !important;
+    color: #111 !important;
+    font-size: 10.5pt;
+  }
+  [data-print="hide"] {
+    display: none !important;
+  }
+  section {
+    break-inside: avoid;
+    padding-block: 0.75rem !important;
+  }
+  h2 {
+    break-after: avoid;
+  }
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 8pt;
+    color: #555;
+  }
+}
