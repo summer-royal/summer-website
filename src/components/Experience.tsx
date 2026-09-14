@@ -49,7 +49,9 @@ export function Experience() {
                         aria-hidden="true"
                         className="absolute left-0 top-[0.7em] hidden h-px w-3 bg-sound/60 sm:block"
                       />
-                      <p className="measure leading-relaxed text-bone">{p.summary}</p>
+                      <p className="measure leading-relaxed text-bone">
+                        <Summary {...p} />
+                      </p>
                     </li>
                   ))}
                 </ul>
@@ -59,5 +61,18 @@ export function Experience() {
         ))}
       </div>
     </Section>
+  );
+}
+
+function Summary({ summary, bold }: { summary: string; bold?: string }) {
+  // Where the bold words fall in the summary. Not found, it is set plain.
+  const at = bold ? summary.indexOf(bold) : -1;
+  if (!bold || at === -1) return <>{summary}</>;
+  return (
+    <>
+      {summary.slice(0, at)}
+      <strong className="font-semibold">{bold}</strong>
+      {summary.slice(at + bold.length)}
+    </>
   );
 }

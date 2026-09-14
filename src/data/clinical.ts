@@ -50,8 +50,7 @@ export const certifications: Certification[] = [
 ];
 
 export const clinicalNote =
-  "Five departments at Stanford and three at El Camino — neurosurgery and neurology first, because the brain is what started all of this, and the emergency department because it is where medicine is least like a diagram.";
-
+  "Textbooks don't show you what a procedure actually looks like in practice. I shadow to see that: how a team moves through a case, where the pace slows because of a bottleneck with the technology, and which steps take more attention. Even in a well-equipped hospital, the gaps are there, just smaller and more specific than a textbook would suggest. Since I come from a bioengineering background, I look at things from a biodesign perspective and shadow for the purposes of identifying unmet clinical needs."
 /**
  * Photographs from the hospital, passing under the Hospital Work heading on the
  * same reel the Experience section opens with.

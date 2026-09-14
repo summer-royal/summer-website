@@ -1075,43 +1075,6 @@
     display: none;
   }
 }
-
-/* ---------------------------------------------------------------------
- * The pinned moment
- *
- * The pipeline pin is `position: sticky`, so the page always answers the
- * scroll it is given: flick past and you pass it at full speed. The extra
- * height only exists on a wide viewport with motion allowed, which is why
- * this is a media query and not a JavaScript decision — it is correct on
- * the server and there is no layout shift when hydration lands.
- * ------------------------------------------------------------------ */
-
-.pipeline-track {
-  position: relative;
-  margin-top: 3rem;
-}
-
-@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
-  /* One viewport per stage, plus a little to arrive and settle. */
-  .pipeline-track {
-    min-height: 340vh;
-    min-height: 340svh;
-  }
-
-  .pipeline-stage {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    height: 100svh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 1.25rem;
-    padding-top: 3.5rem;
-    padding-bottom: 1rem;
-  }
-}
-
 /* ---------------------------------------------------------------------
  * The beach
  *
@@ -1448,81 +1411,437 @@
 }
 
 /* ---------------------------------------------------------------------
- * The pipeline diagram
+ * The pipeline figure
+ *
+ * One bordered panel per stage, holding its own drawing and its own text.
+ * On a wide viewport they sit four over three, joined by arrows and one
+ * elbow between the rows; narrower, they stack and the numbers carry the
+ * order on their own.
  * ------------------------------------------------------------------ */
 
-.pipeline-still {
+.pipeline-figure {
   margin-top: 3rem;
 }
 
-.pipeline-svg {
-  display: block;
-  width: 100%;
-  height: auto;
-  max-height: 56svh;
-  margin-block: 0.5rem;
-}
-
-.pipeline-node {
-  font-family: var(--font-display);
-  font-size: 22px;
-  fill: var(--bone);
-}
-.pipeline-micro {
-  font-family: var(--font-sans);
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  fill: var(--sound);
-}
-.pipeline-row {
-  font-family: var(--font-sans);
-  font-size: 14px;
-  fill: var(--bone);
-}
-.pipeline-row-value {
-  fill: var(--muted-foreground);
-}
-
-.pipeline-rail {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1.25rem;
-  border-top: 1px solid var(--border);
-  padding-top: 1rem;
-}
-
-.pipeline-rail li {
+/* Next and Replay, once the walkthrough has started. Stacked on a phone the
+   panels run well past one screen, so the bar rides the foot of the viewport
+   for as long as the figure is in view; from 1024px everything fits at once
+   and the bar moves up beside the caption. */
+.pipeline-controls {
+  position: sticky;
+  bottom: 1rem;
+  z-index: 1;
   display: flex;
-  gap: 0.6rem;
-  color: var(--muted-foreground);
-  transition: color 260ms ease;
-}
-
-.pipeline-rail li[data-active="true"] {
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding: 0.375rem 0.375rem 0.375rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--band-from, var(--background)) 80%, transparent);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
   color: var(--bone);
 }
 
-.pipeline-rail-index {
+.pipeline-status {
+  font-size: 0.8125rem;
+  color: var(--muted-foreground);
+}
+
+.pipeline-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 2.25rem;
+  padding-inline: 0.875rem 1.125rem;
+  border-radius: 999px;
+  background: var(--bone);
+  color: var(--band-from, var(--background));
+  font-size: 0.8125rem;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: translate 160ms ease;
+}
+
+/* It sinks under the pointer rather than lifting, as the reel arrows do. */
+@media (hover: hover) {
+  .pipeline-button:hover {
+    translate: 0 2px;
+  }
+}
+
+.pipeline-button:active {
+  translate: 0 3px;
+}
+
+.pipeline-button:focus-visible {
+  border-radius: 999px;
+}
+
+.pipeline-button svg {
+  width: 1rem;
+  height: 1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@media (min-width: 1024px) {
+  .pipeline-stepper {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 1rem;
+  }
+
+  .pipeline-stepper .pipeline-rows {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .pipeline-stepper .pipeline-controls {
+    grid-column: 2;
+    grid-row: 1;
+    position: static;
+    margin-top: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/* Before anything is drawn there is only this: one large, unmistakable
+   control standing where the figure will be. */
+.pipeline-prompt {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  width: 100%;
+  margin-top: 0.75rem;
+  padding: 1.5rem;
+  border: 1px solid color-mix(in oklab, var(--bone) 35%, transparent);
+  border-radius: 10px;
+  background: color-mix(in oklab, var(--bone) 5%, transparent);
+  color: var(--bone);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 200ms ease,
+    background-color 200ms ease;
+}
+
+@media (hover: hover) {
+  .pipeline-prompt:hover {
+    border-color: color-mix(in oklab, var(--bone) 70%, transparent);
+    background: color-mix(in oklab, var(--bone) 9%, transparent);
+  }
+
+  .pipeline-prompt:hover .pipeline-prompt-disc {
+    translate: 0 2px;
+  }
+}
+
+.pipeline-prompt:active .pipeline-prompt-disc {
+  translate: 0 3px;
+}
+
+.pipeline-prompt:focus-visible {
+  border-radius: 10px;
+}
+
+.pipeline-prompt-disc {
+  position: relative;
   flex: none;
   display: grid;
   place-items: center;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 999px;
+  background: var(--bone);
+  color: var(--band-from, var(--background));
+  transition: translate 160ms ease;
+}
+
+/* A slow ring off the disc, so the eye finds it. Reduced motion stills it. */
+.pipeline-prompt-disc::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--bone);
+  border-radius: inherit;
+  animation: pipeline-prompt-ring 2.4s ease-out infinite;
+}
+
+@keyframes pipeline-prompt-ring {
+  from {
+    opacity: 0.6;
+    scale: 1;
+  }
+  to {
+    opacity: 0;
+    scale: 1.45;
+  }
+}
+
+.pipeline-prompt-disc svg {
+  width: 1.625rem;
+  height: 1.625rem;
+  margin-left: 0.2rem;
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.pipeline-prompt-text {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.pipeline-prompt-title {
+  font-family: var(--font-display);
+  font-size: var(--text-h3);
+  line-height: 1.2;
+}
+
+.pipeline-prompt-note {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+@media (min-width: 640px) {
+  .pipeline-prompt {
+    gap: 1.5rem;
+    padding: 2rem 2.25rem;
+  }
+
+  .pipeline-prompt-disc {
+    width: 4.75rem;
+    height: 4.75rem;
+  }
+}
+
+.pipeline-rows {
+  --pipe-gap: 1rem;
+  --pipe-pad: 0.9rem;
+  --pipe-art: 5.5rem;
+  --pipe-line: color-mix(in oklab, var(--bone) 55%, transparent);
+  margin-top: 0.75rem;
+}
+
+.pipeline-steps {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--pipe-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pipeline-steps[data-row="2"] {
+  margin-top: var(--pipe-gap);
+}
+
+.pipeline-panel {
+  position: relative;
+  padding: var(--pipe-pad) 1rem 1rem;
+  border: 1px solid color-mix(in oklab, var(--bone) 22%, transparent);
+  border-radius: 6px;
+  background: color-mix(in oklab, var(--bone) 3%, transparent);
+  color: var(--bone);
+  transition:
+    border-color 300ms ease,
+    background-color 300ms ease;
+}
+
+.pipeline-panel[data-state="active"] {
+  border-color: color-mix(in oklab, var(--bone) 60%, transparent);
+  background: color-mix(in oklab, var(--bone) 7%, transparent);
+  animation: pipeline-panel-in 420ms ease-out both;
+}
+
+@keyframes pipeline-panel-in {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+}
+
+/* A stage stays out of sight until the walkthrough reaches it. In the wide
+   grid it keeps its place, so nothing already on screen moves when it
+   arrives; stacked, it takes no room until then. */
+.pipeline-panel[data-state="upcoming"] {
+  visibility: hidden;
+}
+
+@media (max-width: 1023.98px) {
+  .pipeline-panel[data-state="upcoming"] {
+    display: none;
+  }
+}
+
+.pipeline-art {
+  position: relative;
+  height: var(--pipe-art);
+  margin-bottom: 0.75rem;
+}
+
+.pipeline-art svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.pipeline-panel-head {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.pipeline-index {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 1.375rem;
+  height: 1.375rem;
   border: 1px solid currentColor;
   border-radius: 999px;
-  font-size: 0.7rem;
+  font-size: 0.6875rem;
+  line-height: 1;
+  transition:
+    background-color 300ms ease,
+    color 300ms ease;
 }
 
-.pipeline-rail-label {
-  display: block;
-  font-size: 0.875rem;
-  color: currentColor;
+.pipeline-panel[data-state="active"] .pipeline-index {
+  background: var(--bone);
+  color: var(--band-from, #fff);
 }
 
-.pipeline-rail-note {
-  display: block;
+.pipeline-panel-title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+.pipeline-panel-note {
+  margin-top: 0.4rem;
   font-size: 0.8125rem;
+  line-height: 1.5;
   color: var(--muted-foreground);
+}
+
+/* The arrow across the gap to the next panel, level with the drawings. */
+.pipeline-link {
+  display: none;
+  position: absolute;
+  top: calc(var(--pipe-pad) + var(--pipe-art) / 2 - 4.5px);
+  left: calc(100% + 6px);
+  width: calc(var(--pipe-gap) - 12px);
+  height: 9px;
+}
+
+.pipeline-link::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 0;
+  right: 1px;
+  height: 1px;
+  background: var(--pipe-line);
+}
+
+.pipeline-link::after {
+  content: "";
+  position: absolute;
+  top: 1.5px;
+  right: 2px;
+  width: 6px;
+  height: 6px;
+  border-top: 1px solid var(--pipe-line);
+  border-right: 1px solid var(--pipe-line);
+  transform: rotate(45deg);
+}
+
+/* The elbow from the foot of panel 4 to the head of panel 5. Its ends sit
+   on the two panels' centres: half a column in from the right of a
+   four-column row, and half a column in from the left of a three. */
+.pipeline-return {
+  display: none;
+  position: relative;
+  height: 2.25rem;
+}
+
+.pipeline-return-out,
+.pipeline-return-in {
+  position: absolute;
+  height: 50%;
+  border: 0 solid var(--pipe-line);
+}
+
+.pipeline-return-out {
+  top: 0;
+  left: 50%;
+  right: calc((100% - 3 * var(--pipe-gap)) / 8);
+  border-right-width: 1px;
+  border-bottom-width: 1px;
+  border-bottom-right-radius: 10px;
+}
+
+.pipeline-return-in {
+  top: calc(50% - 1px);
+  left: calc((100% - 2 * var(--pipe-gap)) / 6);
+  right: 50%;
+  border-left-width: 1px;
+  border-top-width: 1px;
+  border-top-left-radius: 10px;
+}
+
+.pipeline-return-in::after {
+  content: "";
+  position: absolute;
+  left: -3.5px;
+  bottom: 1.5px;
+  width: 6px;
+  height: 6px;
+  border-right: 1px solid var(--pipe-line);
+  border-bottom: 1px solid var(--pipe-line);
+  transform: rotate(45deg);
+}
+
+@media (min-width: 640px) {
+  .pipeline-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .pipeline-rows {
+    --pipe-gap: 2rem;
+  }
+
+  .pipeline-steps {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+  }
+
+  .pipeline-steps[data-row="2"] {
+    margin-top: 0;
+  }
+
+  .pipeline-link,
+  .pipeline-return {
+    display: block;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

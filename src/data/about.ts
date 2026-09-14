@@ -6,5 +6,5 @@ export const about = {
     "I am eager to immerse myself in interdisciplinary environments where I can combine my knowledge of medicine with my love for software engineering. My background in healthcare technology, machine learning, and collaborative problem-solving has prepared me to contribute meaningfully to projects at the intersection of healthcare and technology. I’m particularly drawn to opportunities where software can help make sense of complex biological and clinical information, improve how healthcare is delivered, or enable solutions that were previously out of reach. Ultimately, I hope to build technology that not only solves challenging technical problems, but also has a tangible impact on people’s health and quality of life.",
   ],
   hobbies:
-    "I enjoy reading nonfiction, watching romcoms, photography, going to scenic places, trying out new dessert shops, and traveling! Check out some of my travel highlights below :)",
+    "I enjoy reading nonfiction, watching romcoms, photography, going to scenic places, trying out new dessert shops, jiu-jitsu, and rock wall climbing! I also really love to travel to other places to see how people live and think differently around the world. Check out some of my travel highlights below :)",
 };

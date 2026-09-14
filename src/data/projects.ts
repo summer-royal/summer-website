@@ -13,6 +13,9 @@ export interface SideProject {
     href: string;
     /** Rendered first page, served from /public — becomes the tile image. */
     thumb?: string;
+    /** The thumb is a 16:9 crop of the page rather than the whole portrait
+     * page, so the tile takes a slide's shape, as a deck's does. */
+    wide?: boolean;
   };
   /** A slide deck — the tile opens it in a lightbox rather than navigating away,
    * or links straight to it when the deck is a PDF with nothing to embed. */
@@ -50,6 +53,12 @@ export interface SideProject {
     poster: string;
     /** Described for screen readers, since the clip itself carries no words. */
     alt: string;
+  };
+  /** Outside coverage of the project — offered in the link row, not the tile. */
+  press?: {
+    /** Names the outlet, and is the link text. */
+    label: string;
+    href: string;
   };
 }
 
@@ -128,7 +137,8 @@ export const sideProjects: SideProject[] = [
     paper: {
       label: "Restoring Decision-Making Autonomy in End-of-Life Care (PDF)",
       href: "/autonomyaid.pdf",
-      thumb: "/autonomyaid-page1.jpg",
+      thumb: "/autonomyaid-cover.jpg",
+      wide: true,
     },
   },
   {
@@ -213,6 +223,10 @@ export const sideProjects: SideProject[] = [
     logo: {
       src: "/ditch-dat-logo.png",
       alt: "The Ditch Dat! Head Lice badge — a glum cartoon louse under a stamped wordmark.",
+    },
+    press: {
+      label: "Honolulu Star-Advertiser",
+      href: "https://www.staradvertiser.com/2019/09/06/hawaii-news/lee-cataluna/cataluna-what-this-girl-did-in-the-name-of-science/",
     },
   },
 ];

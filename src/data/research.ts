@@ -41,23 +41,31 @@ export const research: ResearchLab[] = [
     dates: "2024 — 2025",
     title: "Finding chemotherapy's hidden side effects in the notes",
     standfirst:
-      "An end-to-end machine learning pipeline for earlier identification of chemotherapy-induced neurotoxicity — CIPN and CRCI — from the clinical text that billing codes miss.",
+      "An end-to-end machine learning pipeline for early identification of chemotherapy-induced neurotoxicity from the clinical text. My research specifically focused on chemotherapy-induced peripheral neurotoxicity (CIPN) and cancer-related cognitive impairment (CRCI).",
     beats: [
       {
         label: "The clinical problem",
-        body: "Chemotherapy can leave patients with nerve damage (CIPN) and cognitive impairment (CRCI). Both are common, and both are badly undercounted: ICD codes substantially underestimate how often they occur, because the symptoms usually get written down in a note rather than coded as a diagnosis. If the record says it did not happen, nobody studies it, screens for it, or treats it early.",
+        body: "Chemotherapy can leave patients with nerve damage (CIPN) and cognitive impairment (CRCI), and both are severely under-reported. There is no standardized test for either, most symptoms depend on the patient reporting them, and physicians document them inconsistently, so administrative code counts underestimate how often cases of neurotoxicity occur. Physicians often note the symptoms in the patient's file, but rarely diagnose neurotoxity explciitly with an ICD code. If the record says it does not happen often, researchers are less liekly to study it, screens for it, or treats it early.",
+      },
+      {
+        label: "The gap",
+        body: "No existing work showed how to extract neurotoxicity symptoms from clinical notes with LLMs, and existing chemotherapy risk models do not target neurotoxicity specifically. My initial hypothesis: we can extract neurotoxicty symptoms from clinical notes and build a model to estimate the probability that a given patient develops neurotoxicity after treatment.",
+      },
+      {
+        label: "The cohort",
+        body: "Adults in the Stanford Health Care database with a solid tumor at any stage who started chemotherapy between 2014 and 2024: 27,950 patients. Solid tumors make up about 90% of adult cancers and are treated differently from blood cancers. A patient counts as positive when an ICD-10 code for drug-induced polyneuropathy (G62.0) or cognitive symptoms (R41.89) appears within three months of starting chemotherapy, the window in which symptoms typically emerge. The 302 patients already diagnosed in the three months before treatment were excluded, so the positives reflect neurotoxicity that follows chemotherapy rather than predates it.",
       },
       {
         label: "The approach",
-        body: "The system reads the notes instead of the codes. A retrieval pipeline called CLEAR pulls the passages of a patient's clinical notes that are actually relevant to neurotoxicity, and GPT-4o then extracts the symptoms from those passages zero-shot — no labeled training corpus required, which is what makes it portable to a new site or a new cohort. That extraction is what auto-labels clinician notes at the scale a model needs.",
+        body: "The system reads the notes instead of the codes. For positive cases it takes the progress, H&P, telephone encounter, and emergency department notes written between the start of first-line chemotherapy and the diagnosis; for negative cases, a random few per patient that do not explicitly mention neurotoxicity. Most of any note is irrelevant, so a retrieval pipeline called CLEAR narrows it first. Rather than embedding whole notes, it splits them into topic-focused chunks, keeps the clinical entities relevant to neurotoxicity, expands that list with ontologies and an LLM, and returns only the chunks tied to those entities. GPT-4o then labels the symptoms in those chunks zero-shot. No labeled training corpus is required, which is what makes it portable to a new site or a new cohort.",
       },
       {
-        label: "The result",
-        body: "Physicians confirmed the labeling schema before the run and validated the extracted results after it, so the output is clinician-checked rather than model-asserted. The effect is a far more honest picture of how often neurotoxicity actually appears — a base for earlier screening and for trials that can measure it.",
+        label: "Clinical validation",
+        body: "Once the labeling scheme was finalized, Dr. Mohana Roy reviewed the LLM's output against the notes, so the labels are clinician-validated rather than model-asserted. That gives a way to count neurotoxicity from what clinicians actually wrote, not only from what was coded, which is the groundwork for earlier screening and for trials that can measure it.",
       },
       {
         label: "Predicting it before treatment",
-        body: "On top of those labels, trained a model that flags patients at elevated risk before chemotherapy begins, and wrote the model cards that document its performance, fairness, and limitations — the interpretability record a model needs before anyone can use it in a clinic.",
+        body: "On top of those labels, built models that flag patients at elevated risk of chemotherapy-induced neurotoxicity before treatment begins, so physicians can weigh that risk when recommending a regimen. Compared candidate models on hazard ratios, correlated features, and clinical impact, and wrote the model cards that document performance, fairness, and limitations — the interpretability record a model needs before anyone can use it in a clinic.",
       },
       {
         label: "Alongside",
@@ -67,23 +75,64 @@ export const research: ResearchLab[] = [
     facts: [
       {
         label: "FOCUS",
-        body: "CIPN (peripheral neuropathy) and CRCI (cognitive impairment) after chemotherapy.",
+        body: "CIPN (peripheral neuropathy) and CRCI (cognitive impairment) after chemotherapy, in adults with solid tumors.",
+      },
+      {
+        label: "COHORT",
+        body: "Adults with solid tumors who started chemotherapy at Stanford Health Care, 2014–2024. Labeled from ICD-10 G62.0 and R41.89 within three months of treatment.",
       },
       {
         label: "METHODS",
-        body: "CLEAR retrieval-augmented generation, zero-shot GPT-4o extraction, physician-confirmed labeling schema, risk model documented with model cards.",
+        body: "CLEAR entity-based retrieval-augmented generation, zero-shot GPT-4o symptom extraction, physician-validated labels, risk models compared on hazard ratios, correlated features, and clinical impact, documented with model cards.",
+      },
+      {
+        label: "MENTORS",
+        body: "Dr. Tina Hernandez-Boussard and Dr. Behzad Naderalvojoud",
       },
     ],
+    /** Each `id` selects its drawing in PipelineFigure. */
     pipeline: [
-      { id: "notes", label: "Clinical notes", note: "unstructured EHR text" },
-      { id: "clear", label: "CLEAR retrieval", note: "relevant chunks only" },
-      { id: "gpt", label: "GPT-4o extraction", note: "zero-shot prompting" },
-      { id: "labels", label: "Validated labels", note: "physician-confirmed" },
+      {
+        id: "cohort",
+        label: "Build the cohort",
+        note: "Create a cohort of patients who have received chemotherapy for a solid tumor, consult with physicians to confirm the cohort definition, and then summarize the composition of the cohort.",
+      },
+      {
+        id: "subcohort",
+        label: "Diagnosed subcohort",
+        note: "Identify existing diagnosed markers of neurotoxicity within the cohort and create a subcohort of patients based on surrogate markers; cross-reference against unstructured patient notes from the EMR.",
+      },
+      {
+        id: "llm-labels",
+        label: "Label with LLMs",
+        note: "Use LLMs to label patient records and identify undiagnosed instances of neurotoxicity; consult with physicians to confirm results.",
+      },
+      {
+        id: "features",
+        label: "Derive features",
+        note: "Derive features of neurotoxicity from both the diagnosed and undiagnosed instances of neurotoxicity.",
+      },
+      {
+        id: "model",
+        label: "Predict onset",
+        note: "Create a model to predict onset of neurotoxicity.",
+      },
+      {
+        id: "evaluate",
+        label: "Evaluate models",
+        note: "Evaluate different models (accuracy, precision, recall).",
+      },
+      {
+        id: "interpret",
+        label: "Interpret the results",
+        note: "Identify hazard ratios, correlatory features, and clinical impact.",
+      },
     ],
     /** TODO: add the remaining shareable metrics — recall, and agreement with
-     *  the physician labels. Cohort size and labelling volume are below. */
+     *  the physician labels. */
     metrics: [
       { value: "27,950", label: "patients in the cohort" },
+      { value: "717", label: "ICD-coded neurotoxicity cases within three months of chemotherapy" },
       { value: "100,000+", label: "clinician notes labeled" },
     ],
     /** TODO: add a preprint, poster, or publication link when available. */
@@ -94,28 +143,40 @@ export const research: ResearchLab[] = [
     lab: "University of Oxford",
     institution: "Oxford, UK",
     role: "Research tutorial, computational neuroscience",
-    dates: "2023",
-    title: "A term of computational neuroscience, one-to-one",
+    dates: "2024",
+    title: "Computational Neuroscience Research Tutorial",
     standfirst:
-      "A research tutorial in computational neuroscience under the mentorship of Dr. Juan Galeazzi, completed while studying abroad at Oxford University.",
+      "Completed under the mentorship of Dr. Juan Galeazzi while studying abroad at Oxford University.",
     beats: [
       {
-        label: "Brains, described formally",
-        body: "Brain organization and computational brain modeling — how the structure of a nervous system gets written down precisely enough that it can be simulated rather than only described.",
+        label: "Foundations",
+        body: "How the brain is organized, from Brodmann's localisation of the cerebral cortex to its functional anatomy; the research methods neuroscience depends on; and how the brain should be modeled, working from Dayan and Abbott's Theoretical Neuroscience.",
       },
       {
-        label: "The shared vocabulary",
-        body: "Computer vision, memory, and reinforcement learning, taken from the side that treats them as accounts of what brains actually do rather than only as engineering. Which is a large part of why the machine learning on the rest of this page keeps reaching back toward biology.",
+        label: "Vision and movement",
+        body: "Computational modeling of human vision, then the processes involved in voluntary movement, from planning an action to carrying it out.",
       },
       {
-        label: "Recording at scale",
-        body: "Large-scale neural recordings, and what becomes answerable about a population of neurons once you can listen to thousands of them at once instead of one at a time.",
+        label: "Memory and learning",
+        body: "The structures that contribute to different types of memory, then the mechanisms of learning. The readings ran from Pavlov's conditioned reflexes and the Skinner–Konorski debate over two types of conditioned reflex, through Tolman, two-process learning theory, and Pavlovian-to-instrumental transfer, to the dopamine reward prediction error that links conditioning to reinforcement learning (Schultz, Dayan & Montague, 1997).",
+      },
+      {
+        label: "Large-scale neural recordings",
+        body: "Making sense of high-dimensional data from recordings of many neurons at once: dimensionality reduction for neural populations (Cunningham & Yu, 2014; Humphries, 2021), context-dependent computation by recurrent dynamics in prefrontal cortex (Mante et al., 2013), and the new insights needed to link large-scale recordings to behavior (Urai et al., 2022).",
       },
     ],
     facts: [
       {
+        label: "PROGRAM",
+        body: "Neurophysiology tutorial, Stanford University Programme in Oxford, Trinity term 2024.",
+      },
+      {
         label: "FOCUS",
-        body: "Brain organization, computational brain modeling, computer vision, memory, reinforcement learning, large-scale neural recordings.",
+        body: "Brain organization, research methods, computational modeling of the brain, vision, voluntary movement, memory, reward and reinforcement learning, large-scale neural recordings.",
+      },
+      {
+        label: "KEY TEXTS",
+        body: "Dayan & Abbott, Theoretical Neuroscience; Kandel et al., Principles of Neural Science; Rolls & Treves, Neural Networks and Brain Function; Nolte's The Human Brain.",
       },
       {
         label: "MENTOR",

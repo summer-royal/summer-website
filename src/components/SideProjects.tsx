@@ -12,8 +12,9 @@ const tileFrame =
 const tileClass = `${tileFrame} h-28 sm:h-full sm:min-h-[9rem]`;
 
 /**
- * A deck tile takes the slide's own 16:9 instead of the column's height, so it
- * is exactly as tall as the slide in it and no taller.
+ * A deck tile — or a paper cropped to the same shape — takes a slide's 16:9
+ * instead of the column's height, so it is exactly as tall as the picture in it
+ * and no taller.
  */
 const slideTileClass = `${tileFrame} aspect-video`;
 
@@ -365,7 +366,7 @@ function Tile({ project }: { project: SideProject }) {
         target="_blank"
         rel="noreferrer noopener"
         aria-label={`${project.name} — ${project.paper.label}`}
-        className={`${tileClass} paper group bg-white transition-colors hover:border-signal/70`}
+        className={`${project.paper.wide ? slideTileClass : tileClass} paper group bg-white transition-colors hover:border-signal/70`}
       >
         {project.paper.thumb ? (
           <img
@@ -379,7 +380,7 @@ function Tile({ project }: { project: SideProject }) {
           <TileArt mark={project.mark} />
         )}
         <TileCue />
-        <TileBadge>PDF</TileBadge>
+        <TileBadge top={project.paper.wide === true}>PDF</TileBadge>
       </a>
     );
   }
@@ -429,9 +430,10 @@ export function SideProjects() {
             key={p.name}
             className="grid gap-5 border-t border-border/60 pt-8 sm:grid-cols-[11rem_minmax(0,1fr)] sm:gap-8"
           >
-            {/* A slide is shorter than the writing beside it, so it sits level
-                with the middle of the writing rather than hanging from its top. */}
-            <RiseItem className={p.deck ? "sm:self-center" : ""}>
+            {/* A slide-shaped tile is shorter than the writing beside it, so it
+                sits level with the middle of the writing rather than hanging
+                from its top. */}
+            <RiseItem className={p.deck || p.paper?.wide ? "sm:self-center" : ""}>
               <Tile project={p} />
             </RiseItem>
             <RiseItem>
@@ -450,7 +452,7 @@ export function SideProjects() {
                   </span>
                 ))}
               </p>
-              {(p.live || p.repo || p.paper || p.deck) && (
+              {(p.live || p.repo || p.paper || p.deck || p.press) && (
                 <p className="mt-3 flex flex-wrap gap-5 text-fine">
                   {p.deck && (
                     <a
@@ -490,6 +492,16 @@ export function SideProjects() {
                       rel="noreferrer noopener"
                     >
                       Repository
+                    </a>
+                  )}
+                  {p.press && (
+                    <a
+                      className="link-signal"
+                      href={p.press.href}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                    >
+                      {p.press.label}
                     </a>
                   )}
                 </p>
