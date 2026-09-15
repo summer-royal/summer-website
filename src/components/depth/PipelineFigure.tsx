@@ -794,7 +794,9 @@ export function PipelineFigure({ steps }: { steps: PipelineStep[] }) {
             </svg>
           </span>
           <span className="pipeline-prompt-text">
-            <span className="pipeline-prompt-title">Play the pipeline</span>
+            <span className="pipeline-prompt-title">
+              Press play to see the step-by-step pipeline
+            </span>
             <span className="pipeline-prompt-note">
               {count} steps, one at a time. Press Next to move on.
             </span>
@@ -808,21 +810,51 @@ export function PipelineFigure({ steps }: { steps: PipelineStep[] }) {
     <figure ref={figureRef} className="pipeline-figure pipeline-stepper" data-print="hide">
       <figcaption className="text-micro tracking-[0.18em] text-sound">PIPELINE</figcaption>
       <PipelineSteps steps={steps} progress={progress} current={current} />
+      <p className="sr-only" aria-live="polite">
+        Step {current + 1} of {count}: {steps[current]?.label}
+      </p>
       <div className="pipeline-controls">
-        <p className="pipeline-status tabular-nums" aria-live="polite">
-          Step {current + 1} of {count}
-          <span className="sr-only">: {steps[current]?.label}</span>
-        </p>
+        <div className="pipeline-status" aria-hidden="true">
+          <span className="pipeline-progress">
+            {steps.map((step, i) => (
+              <span key={step.id} data-on={i <= current ? "" : undefined} />
+            ))}
+          </span>
+          <span className="tabular-nums">
+            Step {current + 1} of {count}
+          </span>
+        </div>
         <button
           ref={buttonRef}
           type="button"
           className="pipeline-button"
+          aria-label={
+            action === "Replay"
+              ? "Replay the pipeline from step 1"
+              : `Next step: ${steps[current + 1]?.label ?? ""}`
+          }
           onClick={() => goTo(action === "Replay" ? 0 : current + 1)}
         >
-          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path d={ICONS[action]} />
-          </svg>
-          {action}
+          {action === "Next" && (
+            // Re-keyed on every step, so its pulse waits for the new drawing to finish.
+            <span key={current} className="pipeline-button-pulse" aria-hidden="true" />
+          )}
+          <span className="pipeline-button-text" aria-hidden="true">
+            <span className="pipeline-button-kicker">
+              <span className="pipeline-button-count tabular-nums">
+                {current + 1}/{count} ·{" "}
+              </span>
+              {action === "Replay" ? "Done" : "Next step"}
+            </span>
+            <span className="pipeline-button-title">
+              {action === "Replay" ? "Replay from step 1" : steps[current + 1]?.label}
+            </span>
+          </span>
+          <span className="pipeline-button-disc" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path d={ICONS[action]} />
+            </svg>
+          </span>
         </button>
       </div>
     </figure>
