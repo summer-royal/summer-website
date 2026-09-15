@@ -1,6 +1,6 @@
 # Photographs
 
-The travel photographs. Seventeen of them, hung on the wall at the foot of the
+The travel photographs. Nineteen of them, hung on the wall at the foot of the
 About section — three of which also drift in the gutter beside the About prose
 on a wide viewport.
 
@@ -61,4 +61,4 @@ bottom of the portrait and the top of the wall. Move the prose or the wall and
 those three numbers want re-checking.
 
 Below 1024px there is no gutter at all — the prose takes the full width — so
-`styles.css` stands those slots down and the wall shows all seventeen instead.
+`styles.css` stands those slots down and the wall shows all nineteen instead.

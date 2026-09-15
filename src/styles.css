@@ -430,18 +430,18 @@
   --border: #37515e;
 }
 
-/* The turnover. It is long on purpose: this is the only stretch of the page
-   with nothing written on it, so it is the only stretch where the water may
-   cross the mid-tones, and giving it a full screen is what lets it cross them
-   at a rate close to the rest of the descent instead of in one cut. It takes
-   its gradient from --band-stops like every other band. */
+/* The turnover. This is the only stretch of the page with nothing written on
+   it, so it is the only stretch where the water may cross the mid-tones. It
+   is kept short so Research and Awards don't sit a screen apart; the water
+   turns faster here than elsewhere, but still as a gradient, not a cut. It
+   takes its gradient from --band-stops like every other band. */
 .depth-band.descent-band {
-  min-height: 100svh;
+  min-height: 14rem;
   padding-top: 1.5rem;
 }
 @media (max-width: 767.98px) {
   .depth-band.descent-band {
-    min-height: 72svh;
+    min-height: 9rem;
   }
 }
 
@@ -763,7 +763,7 @@
 
 /* The three prints that drift in the About gutter from 1024px up stand down
    here, so the same photograph is never on screen twice. Below that width
-   there is no gutter and the wall carries all seventeen. This is an attribute
+   there is no gutter and the wall carries all nineteen. This is an attribute
    rather than a `lg:hidden` class because the `display` above would otherwise
    have to win a cascade argument with a utility to be applied at all. */
 @media (min-width: 1024px) {

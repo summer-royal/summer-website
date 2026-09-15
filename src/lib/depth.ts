@@ -15,10 +15,9 @@
  *
  * The light→dark crossover still happens in the `descent` band, which carries
  * no body text, because no ink of any colour clears 4.5:1 across the tones in
- * the middle. It is no longer compressed, though: that band is a full screen
- * tall so the water can cross those tones at close to the rate it moves
- * everywhere else. The gradient is one curve down the whole page, designed on
- * its rate of change rather than its endpoints — see the descent section of
+ * the middle. That band is kept short so Research and Awards stay close
+ * together, which makes the water turn faster there than anywhere else. The
+ * gradient is one curve down the whole page — see the descent section of
  * styles.css, which is where the colours live.
  */
 

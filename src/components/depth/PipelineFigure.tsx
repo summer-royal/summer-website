@@ -798,7 +798,7 @@ export function PipelineFigure({ steps }: { steps: PipelineStep[] }) {
               Press play to see the step-by-step pipeline
             </span>
             <span className="pipeline-prompt-note">
-              {count} steps, one at a time. Press Next to move on.
+              Press Next to move on.
             </span>
           </span>
         </button>

@@ -23,7 +23,7 @@ export interface TravelPhoto {
   /**
    * Also drifts in the About gutter from 1024px up (see `src/data/objects.ts`).
    * The wall stands these three down at that width, because the gutter has
-   * them — below it there is no gutter, so the wall shows all seventeen.
+   * them — below it there is no gutter, so the wall shows all nineteen.
    */
   gutter?: boolean;
 }
@@ -33,7 +33,7 @@ export function placeOf(photo: TravelPhoto): string {
   return `${photo.city}, ${photo.country}`;
 }
 
-/** Ordered by region: the American east, the west, then Europe. */
+/** Ordered by region: the American east, the west, Central America, then Europe. */
 export const travelPhotos: TravelPhoto[] = [
   {
     id: "boston",
@@ -100,6 +100,22 @@ export const travelPhotos: TravelPhoto[] = [
     country: "USA",
     aspect: 1.5,
     gutter: true,
+  },
+  {
+    id: "tamarindo",
+    src: "/photos/tamarindo.jpg",
+    alt: "On a zipline through the treetops in the evening light.",
+    city: "Tamarindo",
+    country: "Costa Rica",
+    aspect: 0.666,
+  },
+  {
+    id: "montezuma",
+    src: "/photos/montezuma.jpg",
+    alt: "Riders on horseback silhouetted along the beach at sunset.",
+    city: "Montezuma",
+    country: "Costa Rica",
+    aspect: 1.76,
   },
   {
     id: "lisbon",
