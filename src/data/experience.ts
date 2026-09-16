@@ -178,7 +178,7 @@ export const experience: Role[] = [
         summary: "Held office hours to answer student questions.",
       },
       {
-        summary: "Attended class to facilitate class discussions and answer student questions.",
+        summary: "Facilitated class discussions and answered student questions during class.",
       },
     ],
   },
