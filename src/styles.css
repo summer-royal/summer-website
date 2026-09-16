@@ -1519,7 +1519,7 @@
      finish 8% of a body length below the box — that is the part that has to
      reach the water, so the fall is short by exactly that much. */
   --dive-fall: calc(var(--dive-water) - var(--diver-top) - var(--diver-h) * 1.08);
-  --dive-drift: calc(var(--diver-h) * -0.28);
+  --dive-drift: calc(var(--diver-h) * -0.4);
   --diver-left: calc(var(--diver-track) * 0.0665);
   --board-h: calc(var(--diver-track) * 0.2667);
   --spray-w: calc(var(--diver-h) * 1.6);
@@ -1553,6 +1553,8 @@
   width: 100%;
   height: auto;
   overflow: visible;
+  filter: drop-shadow(0 0 2px rgb(255 255 255 / 0.95)) drop-shadow(0 0 6px rgb(255 255 255 / 0.85))
+    drop-shadow(0 1px 2px rgb(17 48 58 / 0.3));
 }
 
 /* Gone by the time the foam reaches it — the board sits at about 25svh, which
@@ -1607,9 +1609,9 @@
 }
 
 .dive-board-plank {
-  fill: rgb(200 216 228 / 0.55);
+  fill: rgb(233 242 246 / 0.94);
   stroke: currentColor;
-  stroke-width: 1.6;
+  stroke-width: 1.8;
   stroke-linejoin: round;
 }
 
@@ -1618,7 +1620,7 @@
   stroke: currentColor;
   stroke-width: 0.9;
   stroke-linecap: round;
-  opacity: 0.32;
+  opacity: 0.4;
 }
 
 .dive-board-lip {
@@ -1628,15 +1630,15 @@
 }
 
 .dive-board-stand rect {
-  fill: rgb(200 216 228 / 0.7);
+  fill: rgb(233 242 246 / 0.94);
   stroke: currentColor;
-  stroke-width: 1.5;
+  stroke-width: 1.6;
 }
 
 .dive-board-stand path {
   fill: none;
   stroke: currentColor;
-  stroke-width: 1.5;
+  stroke-width: 1.6;
   stroke-linecap: round;
 }
 
@@ -1669,9 +1671,9 @@
     transform: translate3d(0, calc(var(--diver-h) * -0.04), 0);
     animation-timing-function: cubic-bezier(0.2, 0.6, 0.45, 1);
   }
-  30% {
-    transform: translate3d(0, calc(var(--diver-h) * -0.24), 0);
-    animation-timing-function: cubic-bezier(0.42, 0, 0.78, 0.5);
+  28% {
+    transform: translate3d(0, calc(var(--diver-h) * -0.2), 0);
+    animation-timing-function: cubic-bezier(0.38, 0, 0.75, 0.55);
   }
   66.7% {
     transform: translate3d(0, var(--dive-fall), 0);
@@ -1722,8 +1724,15 @@
 /* A plain header: she leaves the board upright and turns a half revolution
    over her own face, which puts her hands down and her front back towards the
    board at the water. Turned about the hips, which is what she would actually
-   turn about, and held near enough to constant that it reads as controlled
-   rather than as falling over. */
+   turn about.
+ *
+ * Gathered rather than constant, and that is not physics — a body in the air
+ * has no torque on it and turns at a flat rate. It is because she is a hundred
+ * pixels long and the board is right there: at a flat rate she goes through
+ * horizontal at exactly board height, sweeping her whole length across the
+ * plank, and it reads as a collision rather than a dive. Holding her upright a
+ * little longer, while gravity takes her down past the tip, gets her flat well
+ * below the board, where being that long costs nothing. */
 .dive-diver-spin {
   transform-origin: 52% 55%;
   animation: dive-diver-spin var(--dive-ms, 1600ms) linear forwards;
@@ -1737,25 +1746,35 @@
   20% {
     transform: rotate(-7deg);
   }
+  38% {
+    transform: rotate(-38deg);
+  }
+  52% {
+    transform: rotate(-88deg);
+  }
   66.7% {
     transform: rotate(-180deg);
   }
   100% {
-    transform: rotate(-188deg);
+    transform: rotate(-190deg);
   }
 }
 
 /* ---- the figure --------------------------------------------------- */
 
-/* The drop shadow is white and does nothing on the sand, which is already
-   white. Over the banner photograph, which is where the button sometimes
-   leaves the reader, it is the only thing keeping a fine line legible. */
+/* The halo is the only reason any of this is legible. She crosses the top of
+   the beach page, and the top of the beach page is a full-bleed photograph of
+   the Quad under a lattice of neon — a 1px teal line over that is simply not
+   there. Two white glows lift her off it and a faint dark one puts an edge
+   back on where the backdrop is pale, so the same drawing survives the photo,
+   the sand and the water without changing colour for any of them. */
 .dive-diver-figure {
   display: block;
   width: 100%;
   height: auto;
   overflow: visible;
-  filter: drop-shadow(0 0 5px rgb(255 255 255 / 0.55));
+  filter: drop-shadow(0 0 2px rgb(255 255 255 / 0.95)) drop-shadow(0 0 6px rgb(255 255 255 / 0.85))
+    drop-shadow(0 1px 2px rgb(17 48 58 / 0.3));
 }
 
 .dive-figure-skin {

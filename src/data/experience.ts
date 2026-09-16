@@ -23,6 +23,31 @@ export interface Role {
 
 export const experience: Role[] = [
   {
+    employer: "Modeling Biomedical Systems Course",
+    title: "Teaching Assistant",
+    location: "Stanford, CA",
+    dates: "2026",
+    context:
+      "At the core of informatics is the problem of creating computable models of biomedical phenomena. This course explores methods for modeling biomedical systems with an emphasis on contemporary semantic technology, including knowledge graphs, and is open only to Clinical Informatics Management M.S. students, who are working professionals in the field. Topics: data modeling, knowledge representation, controlled terminologies, ontologies, reusable problem solvers, and modeling problems in healthcare information technology and other aspects of informatics. Students acquire hands-on experience with several systems and tools.",
+    projects: [
+      {
+        summary: "Write the course's homework assignments.",
+      },
+      {
+        summary: "Grade homework assignments.",
+      },
+      {
+        summary: "Host weekly office hours.",
+      },
+      {
+        summary: "Advise on course content and curriculum.",
+      },
+      {
+        summary: "Lead in-class workshops.",
+      },
+    ],
+  },
+  {
     employer: "Inspirit AI",
     title: "Product Manager",
     location: "Palo Alto, CA",
@@ -134,6 +159,26 @@ export const experience: Role[] = [
       {
         summary:
           "Authored Python processing pipelines to prepare study data for model training including: automating header labeling, detecting and removing corrupted files, and standardizing the data across participants.",
+      },
+    ],
+  },
+  {
+    employer: "Needs Finding in Healthcare Course",
+    title: "Teaching Assistant",
+    location: "Stanford, CA",
+    dates: "2023",
+    context:
+      "Needs Finding in Healthcare is a Sophomore College (SoCo) experiential course offered through Stanford Biodesign that teaches undergraduates how to identify unmet medical problems through direct clinical observation. Students shadow in the hospital, identify unmet clinical needs, and apply the biodesign process to those needs.",
+    projects: [
+      {
+        summary:
+          "Helped plan the course curriculum, including choosing and organizing educational field trips.",
+      },
+      {
+        summary: "Held office hours to answer student questions.",
+      },
+      {
+        summary: "Attended class to facilitate class discussions and answer student questions.",
       },
     ],
   },
