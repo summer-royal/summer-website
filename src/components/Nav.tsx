@@ -135,22 +135,34 @@ export function Nav() {
         <Link
           to="/"
           title="Back to the home page"
-          aria-label="Back to the home page"
-          className="site-nav-brand inline-flex items-center gap-2.5 font-display text-base tracking-[0.08em]"
+          aria-label="S. Royal — back to the home page"
+          className="site-nav-brand inline-flex items-center gap-2 font-display text-base tracking-[0.08em]"
         >
-          {/* The mark is lit artwork on black, so it carries its own dark plate rather
-              than trying to sit on the bar's palette, which runs pale up top. The
-              wordmark beside it is live type, not the one baked into the artwork:
-              that one lands under 4px tall at this height. */}
+          {/* The logo is the artwork as supplied, whole and uncropped; it carries its own
+              pale ground, so it is plated and ruled rather than laid straight on a bar
+              that runs from #bccdd6 at the surface down to #09232e at the footer. */}
           <img
-            src="/logo-mark.webp"
+            src="/logo.webp"
             alt=""
             aria-hidden="true"
-            width={250}
-            height={160}
+            width={360}
+            height={240}
             className="site-nav-logo shrink-0"
           />
-          S. ROYAL
+          <svg
+            viewBox="0 0 24 24"
+            className="site-nav-home h-[1.05em] w-[1.05em] shrink-0"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M3.4 10.9 11.2 4.5a1.25 1.25 0 0 1 1.6 0l7.8 6.4" />
+            <path d="M5.4 9.6v9.7c0 .66.54 1.2 1.2 1.2h10.8c.66 0 1.2-.54 1.2-1.2V9.6" />
+            <path d="M9.9 20.5v-5.3h4.2v5.3" />
+          </svg>
         </Link>
         <ul className="-mr-1 flex items-center gap-1 overflow-x-auto text-fine sm:gap-2">
           {items.map((item) => (
