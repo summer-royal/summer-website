@@ -24,11 +24,11 @@ export function Banner() {
         className="h-[160px] w-full object-cover object-[72%_50%] sm:h-auto sm:max-h-[calc(520px_+_1.77vw)] sm:object-top"
       />
       {/* Fades into whatever the band beneath it opens on — the sand, not the
-          page's base colour, which is a cooler grey than the beach. */}
+          page's base colour, which is a cooler grey than the beach. It carries
+          the sand's grain across the join; styles.css has why. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-20"
-        style={{ backgroundImage: "linear-gradient(to top, var(--band-from), transparent)" }}
+        className="banner-foot pointer-events-none absolute inset-x-0 bottom-0 h-20"
       />
     </div>
   );

@@ -262,12 +262,23 @@
 
 /* The grain of the sand.
  *
- * Two passes, because one alone never looks like sand: a fine grain for the
- * tooth of it, and a coarser, sparser speckle over the top for the larger
- * particles that catch the light. Both are contrast-stretched about their own
- * mid-point rather than laid on more thickly, so the speckle is visible while
- * the grey they average to costs the sand about a point of L* — which is
- * folded into the tokens above.
+ * A photograph of sand, reduced to its tooth: public/sand-grain.jpg is that
+ * photo minus a blur of itself, so what survives is the grain and none of the
+ * photograph's own lighting. The band gradient keeps supplying the colour and
+ * the light; this layer only roughens it. The plate is made seamless by
+ * cross-fading its far edge onto its near edge, and the 300px repeat is fine
+ * enough grain that the tile does not read.
+ *
+ * It is composited `overlay` against a copy of the band's own gradient rather
+ * than laid on as a translucent grey. Overlay is affine in the source, so a
+ * plate centred on mid-grey leaves the sand's mean lightness exactly where the
+ * stops put it — the ink tokens above stay solved, and they now have about a
+ * point of L* in hand, since they were fitted when the grain still cost the
+ * sand that point. Blending inside the element (background-blend-mode) rather
+ * than against the page (mix-blend-mode) keeps it out of the band's stacking
+ * order. The duplicated gradient is what the plate blends onto; because it is
+ * the same gradient as the band's, `opacity` here reads as nothing but a
+ * strength dial on the grain.
  *
  * It fades out over the lower part of the band, where the sand gives way to
  * water. It paints under the drifting objects and under the banner, which sit
@@ -278,12 +289,34 @@
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.075;
-  background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='c'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.42' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='3.4' intercept='-1.15'/%3E%3CfeFuncG type='linear' slope='3.4' intercept='-1.15'/%3E%3CfeFuncB type='linear' slope='3.4' intercept='-1.15'/%3E%3CfeFuncA type='linear' slope='0.55'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23c)'/%3E%3C/svg%3E"),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='s'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='2.6' intercept='-0.8'/%3E%3CfeFuncG type='linear' slope='2.6' intercept='-0.8'/%3E%3CfeFuncB type='linear' slope='2.6' intercept='-0.8'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23s)'/%3E%3C/svg%3E");
+  opacity: 1;
+  background-image: url("/sand-grain.jpg"), linear-gradient(to bottom, var(--band-stops));
+  background-repeat: repeat, no-repeat;
+  background-size:
+    300px 300px,
+    100% 100%;
+  background-blend-mode: overlay, normal;
   -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 62%, transparent 88%);
   mask-image: linear-gradient(to bottom, #000 0, #000 62%, transparent 88%);
+}
+
+/* The foot of the banner, where the cover art gives way to the beach.
+ *
+ * The grain above is painted by the band, which sits *under* the banner, so a
+ * flat wash of --band-from here reads as a line across the page: grain below
+ * it, none above. Same plate and the same overlay, with the fade moved off the
+ * gradient and onto the element's own mask, so the sand arrives already grained
+ * and the join is only a change of colour. The plate's phase does not line up
+ * with the band's, which costs nothing: the grain is random, and it is the
+ * amplitude, not the pattern, that a reader would catch. */
+.banner-foot {
+  background-color: var(--band-from);
+  background-image: url("/sand-grain.jpg");
+  background-repeat: repeat;
+  background-size: 300px 300px;
+  background-blend-mode: overlay;
+  -webkit-mask-image: linear-gradient(to top, #000, transparent);
+  mask-image: linear-gradient(to top, #000, transparent);
 }
 
 [data-band="experience"] {
@@ -470,6 +503,27 @@
 }
 .site-nav-brand {
   color: var(--nav-fg);
+}
+/* The house reads as a quiet affordance until you reach for it. */
+.site-nav-home {
+  color: var(--nav-dim);
+  transition:
+    color 200ms ease,
+    transform 200ms ease;
+}
+.site-nav-brand:hover .site-nav-home,
+.site-nav-brand:focus-visible .site-nav-home {
+  color: var(--nav-on);
+  transform: translateY(-1px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-nav-home {
+    transition: color 200ms ease;
+  }
+  .site-nav-brand:hover .site-nav-home,
+  .site-nav-brand:focus-visible .site-nav-home {
+    transform: none;
+  }
 }
 .site-nav-link {
   color: var(--nav-dim);
