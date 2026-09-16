@@ -132,8 +132,25 @@ export function Nav() {
     >
       <nav aria-label="Sections" className="shell flex h-14 items-center justify-between gap-4">
         {/* Home is the beach, which is a page of its own rather than the top of this one. */}
-        <Link to="/" className="site-nav-brand font-display text-base tracking-[0.08em]">
-          S.O.R.
+        <Link
+          to="/"
+          title="Back to the home page"
+          aria-label="Back to the home page"
+          className="site-nav-brand inline-flex items-center gap-2.5 font-display text-base tracking-[0.08em]"
+        >
+          {/* The mark is lit artwork on black, so it carries its own dark plate rather
+              than trying to sit on the bar's palette, which runs pale up top. The
+              wordmark beside it is live type, not the one baked into the artwork:
+              that one lands under 4px tall at this height. */}
+          <img
+            src="/logo-mark.webp"
+            alt=""
+            aria-hidden="true"
+            width={250}
+            height={160}
+            className="site-nav-logo shrink-0"
+          />
+          S. ROYAL
         </Link>
         <ul className="-mr-1 flex items-center gap-1 overflow-x-auto text-fine sm:gap-2">
           {items.map((item) => (
