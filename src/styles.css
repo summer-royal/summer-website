@@ -1100,12 +1100,7 @@
     rgb(0 0 0 / 0.35) 48%,
     transparent 92%
   );
-  mask-image: linear-gradient(
-    to left,
-    rgb(0 0 0 / 0.67),
-    rgb(0 0 0 / 0.35) 48%,
-    transparent 92%
-  );
+  mask-image: linear-gradient(to left, rgb(0 0 0 / 0.67), rgb(0 0 0 / 0.35) 48%, transparent 92%);
 }
 
 @media screen and (min-width: 1024px) {
@@ -1333,7 +1328,7 @@
   position: absolute;
   inset: 0;
   will-change: transform, opacity;
-  animation: dive-tide-sweep var(--tide-ms, 4200ms) cubic-bezier(0.45, 0.05, 0.3, 1) forwards;
+  animation: dive-tide-sweep var(--tide-ms, 42000ms) cubic-bezier(0.45, 0.05, 0.3, 1) forwards;
 }
 
 @keyframes dive-tide-sweep {
@@ -1379,7 +1374,7 @@
   right: -6%;
   bottom: 0;
   height: 300px;
-  animation: dive-crest-drift var(--tide-ms, 4200ms) ease-out forwards;
+  animation: dive-crest-drift var(--tide-ms, 42000ms) ease-out forwards;
 }
 
 /* Each wave is a closed path filled from the top of the box down to its own
@@ -1484,7 +1479,6 @@
   }
 }
 
-
 /* ---------------------------------------------------------------------
  * The diver
  *
@@ -1508,9 +1502,9 @@
 
 .dive-diver,
 .dive-diver-spray {
-  --diver-h: clamp(96px, 13svh, 148px);
+  --diver-h: clamp(122px, 16.5svh, 188px);
   --diver-w: calc(var(--diver-h) * 0.5093);
-  --diver-track: clamp(190px, 22vw, 290px);
+  --diver-track: clamp(242px, 28vw, 368px);
   /* Where she stands, and where the water will be when she arrives. */
   --diver-top: 12svh;
   /* Not where the tide's sheet is — where its *foam* is. See Diver.tsx. */
@@ -1545,7 +1539,7 @@
   right: 0;
   width: 100%;
   top: calc(var(--diver-top) + var(--diver-h) * 0.965 - var(--board-h) * 0.2344);
-  animation: dive-board-fade var(--dive-ms, 1600ms) linear forwards;
+  animation: dive-board-fade var(--dive-ms, 16000ms) linear forwards;
 }
 
 .dive-diver-board svg {
@@ -1558,7 +1552,7 @@
 }
 
 /* Gone by the time the foam reaches it — the board sits at about 25svh, which
-   the surface passes at around 1550ms of the tide. */
+   the surface passes at around 37% of the way through the tide. */
 @keyframes dive-board-fade {
   0% {
     opacity: 0;
@@ -1580,7 +1574,7 @@
 .dive-board-flex {
   transform-box: view-box;
   transform-origin: 161px 22px;
-  animation: dive-board-flex var(--dive-ms, 1600ms) cubic-bezier(0.33, 0, 0.3, 1) forwards;
+  animation: dive-board-flex var(--dive-ms, 16000ms) cubic-bezier(0.33, 0, 0.3, 1) forwards;
 }
 
 @keyframes dive-board-flex {
@@ -1654,8 +1648,8 @@
   width: var(--diver-w);
   will-change: transform, opacity;
   animation:
-    dive-diver-fall var(--dive-ms, 1600ms) forwards,
-    dive-diver-fade var(--dive-ms, 1600ms) linear forwards;
+    dive-diver-fall var(--dive-ms, 16000ms) forwards,
+    dive-diver-fade var(--dive-ms, 16000ms) linear forwards;
 }
 
 @keyframes dive-diver-fall {
@@ -1705,7 +1699,7 @@
 /* The push off the board owns the horizontal, and it is the one part of this
    with no forces on it at all — so it runs flat until the water stops it. */
 .dive-diver-drift {
-  animation: dive-diver-drift var(--dive-ms, 1600ms) linear forwards;
+  animation: dive-diver-drift var(--dive-ms, 16000ms) linear forwards;
 }
 
 @keyframes dive-diver-drift {
@@ -1735,7 +1729,7 @@
  * below the board, where being that long costs nothing. */
 .dive-diver-spin {
   transform-origin: 52% 55%;
-  animation: dive-diver-spin var(--dive-ms, 1600ms) linear forwards;
+  animation: dive-diver-spin var(--dive-ms, 16000ms) linear forwards;
 }
 
 @keyframes dive-diver-spin {
@@ -1811,19 +1805,34 @@
   opacity: 0.5;
 }
 
+/* The brow carries more of the likeness than anything else this small, so it
+   is the one mark allowed to sit darker than the rest of the face. */
+.dive-figure-brow {
+  fill: none;
+  stroke: #5a3b2a;
+  stroke-width: 1.15;
+  stroke-linecap: round;
+  opacity: 0.72;
+}
+
+/* Root to ends rather than one brown: the length in the photograph is lifted
+   several shades by the sun at the bottom, and a flat fill is what made the
+   first cut read as a wig. The gradient is declared inside the figure's own
+   SVG and spans the whole drop, so the crown stays dark and the ends warm.
+   The solid after the url() is the fallback if the paint server is missed. */
 .dive-hair-mass {
-  fill: #6e4a37;
-  stroke: #573727;
+  fill: url(#dive-hair-grad) #7d5540;
+  stroke: #5a3b2a;
   stroke-width: 0.9;
   stroke-linejoin: round;
 }
 
 .dive-hair-strands {
   fill: none;
-  stroke: #9a6f56;
+  stroke: #b08359;
   stroke-width: 0.8;
   stroke-linecap: round;
-  opacity: 0.5;
+  opacity: 0.55;
 }
 
 /* The only part of her the air is allowed to move — the length, swinging
@@ -1831,7 +1840,7 @@
 .dive-hair-fall {
   transform-box: view-box;
   transform-origin: 56px 56px;
-  animation: dive-hair-lift var(--dive-ms, 1600ms) ease-out forwards;
+  animation: dive-hair-lift var(--dive-ms, 16000ms) ease-out forwards;
 }
 
 @keyframes dive-hair-lift {
@@ -1867,9 +1876,7 @@
   position: absolute;
   width: var(--spray-w);
   height: calc(var(--spray-w) * 0.5);
-  left: calc(
-    var(--diver-left) + var(--dive-drift) + var(--diver-w) * 0.526 - var(--spray-w) / 2
-  );
+  left: calc(var(--diver-left) + var(--dive-drift) + var(--diver-w) * 0.526 - var(--spray-w) / 2);
   top: calc(var(--dive-water) - var(--spray-w) * 0.25);
   overflow: visible;
 }
@@ -1878,12 +1885,12 @@
   transform-box: view-box;
   transform-origin: 80px 40px;
   opacity: 0;
-  animation: dive-spray-burst calc(var(--dive-ms, 1600ms) * 0.2)
-    cubic-bezier(0.15, 0.75, 0.35, 1) calc(var(--dive-ms, 1600ms) * 0.667) forwards;
+  animation: dive-spray-burst calc(var(--dive-ms, 16000ms) * 0.2) cubic-bezier(0.15, 0.75, 0.35, 1)
+    calc(var(--dive-ms, 16000ms) * 0.667) forwards;
 }
 
 /* Short, and it climbs. The surface it was thrown off does not stay put — the
-   tide is still coming up at roughly a screen per 900ms — so a burst pinned to
+   tide is still coming up, a screen every fifth of its run — so a burst pinned to
    the entry depth is under a foot of foam before it has finished opening.
    Rising with the water is what keeps it on the surface it belongs to. */
 @keyframes dive-spray-burst {
@@ -1930,8 +1937,8 @@
 @media (max-width: 767.98px) {
   .dive-diver,
   .dive-diver-spray {
-    --diver-h: clamp(72px, 10svh, 100px);
-    --diver-track: clamp(130px, 42vw, 190px);
+    --diver-h: clamp(92px, 12.7svh, 127px);
+    --diver-track: clamp(165px, 53vw, 241px);
     --diver-top: 10svh;
     /* The crest box is 190px here rather than 300, so the foam rides closer to
        the sheet's edge and is higher up the screen at the same instant. */

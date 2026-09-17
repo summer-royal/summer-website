@@ -9,17 +9,19 @@ import {
   type ReactNode,
 } from "react";
 
+import { Diver } from "./Diver";
+
 /**
  * The wash, end to end.
  *
- * The crest takes about a second and a half to cross the viewport and the
- * water spends what is left draining after it — slow enough to be watched,
- * which is the whole point of it.
+ * The crest takes about five seconds to cross the viewport and the water
+ * spends what is left draining after it — slow enough to be watched, which is
+ * the whole point of it.
  *
  * TIDE_MS reaches the stylesheet as a custom property on the tide itself, so
  * the CSS cannot fall out of step with the timer here.
  */
-const TIDE_MS = 4200;
+const TIDE_MS = 6000;
 
 const TideContext = createContext<() => void>(() => {});
 
@@ -35,6 +37,10 @@ export function useTide(): () => void {
  * tide cannot belong to the button that raised it — that unmounts with the
  * beach, halfway through the wash. Mounted once in the root, it carries on
  * draining over the page it delivered the reader to.
+ *
+ * The diver is here for the same reason and on the same clock: she is in the
+ * water well before the page turns, but she is only in the water because the
+ * tide put it there, and the two are raised together or not at all.
  */
 export function TideProvider({ children }: { children: ReactNode }) {
   const [up, setUp] = useState(false);
@@ -59,6 +65,7 @@ export function TideProvider({ children }: { children: ReactNode }) {
   return (
     <TideContext.Provider value={raise}>
       {children}
+      {up && <Diver />}
       {up && <Tide />}
     </TideContext.Provider>
   );

@@ -15,7 +15,7 @@ const OCEAN_PATH = "/dive";
  * rather than in front of the reader. Read off the curve of
  * `dive-tide-sweep` in styles.css; move it if that curve moves.
  */
-const SWAP_MS = 1600;
+const SWAP_MS = 2666;
 
 /**
  * The waterline between the beach and the rest of the site, and the only way
