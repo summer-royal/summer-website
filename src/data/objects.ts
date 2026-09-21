@@ -100,7 +100,7 @@ export const LAYER_TREATMENT: Record<
  * as distance, so a print's depth is carried by how it moves instead.
  *
  * It now sets that movement too, and trades the axes round. A drifting object
- * has open water above and below it; the three prints in the About gutter have
+ * has open water above and below it; the two prints in the About gutter have
  * the lists fixed above them and the wall fixed below, and only the leftover
  * column between the two. So a print rises less than the layer it sits on would
  * have it rise, and in exchange crosses and rocks further — the room it has is
@@ -126,7 +126,7 @@ export const PHOTO_TREATMENT = {
  * prose are always showing the same print described the same way. Only how it
  * hangs is given here, which is the one thing the wall has no use for.
  *
- * `depth` orders these three down the gutter and nothing else: a print falls in
+ * `depth` orders these two down the gutter and nothing else: a print falls in
  * the column left under the About text rather than at a depth in the band, so
  * there is no page position to give it. `x` is likewise the band field's, not
  * the gutter's — a print is centred in the column it falls down.
@@ -157,7 +157,7 @@ function print(
  * Skills or Research bands, so the whole lit half of the descent opens on the
  * writing alone.
  * Mid-water: a trophy, for the awards it falls beside.
- * Through the About band: three of the travel photographs, falling down the
+ * Through the About band: two of the travel photographs, falling down the
  * column left under the portrait and the lists that anchor the top of it, and
  * clear of the wall that carries the rest at the foot of the section.
  * Past QUIET_DEPTH: nothing at all.
@@ -190,13 +190,6 @@ export const driftObjects: DriftObject[] = [
     rotation: -6,
     scale: 1.08,
     tint: "#d8a86a",
-  }),
-  print("lisbon", {
-    depth: 1961,
-    driftSpeed: 0.45,
-    rotation: 5,
-    scale: 1.25,
-    tint: "#dfa0c4",
   }),
 ];
 

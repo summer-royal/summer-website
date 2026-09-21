@@ -116,7 +116,7 @@ function Print({ photo, index }: { photo: TravelPhoto; index: number }) {
  * media query rather than a measurement — the wall is laid out correctly on the
  * server and does not shift when hydration lands.
  *
- * Three of these prints also fall down the gutter beside the About prose from
+ * Two of these prints also fall down the gutter beside the About prose from
  * 1024px up, and carry `data-gutter` so that styles.css can stand them down
  * here, so the same photograph is never on screen twice. Below that width
  * there is no gutter and the wall carries all nineteen.
@@ -125,7 +125,7 @@ export function TravelWall() {
   return (
     // A printed résumé has no use for nineteen holiday photographs.
     <div data-print="hide">
-      {/* This gap is also the bottom of the runway the three gutter prints
+      {/* This gap is also the bottom of the runway the two gutter prints
           fall down — they need room to rise and rock clear of both the links
           above them and this wall below. See .about-gutter in styles.css. */}
       <Rise className="mt-24 sm:mt-40">

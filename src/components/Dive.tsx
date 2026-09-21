@@ -76,6 +76,16 @@ export function DiveButton({ onDive }: { onDive?: () => void }) {
         dive();
       }}
     >
+      {/* A pointer mid-click, ahead of the words. The beach is a page of
+          writing with one thing on it to press, and a reader who has been
+          reading rather than clicking can take the stamp for a heading —
+          this says, before the sentence does, that it is a button. The taps
+          it beats out are on the ring's clock, so the cursor reads as the
+          thing making the rings rather than as a second animation. */}
+      <svg className="dive-button-cursor" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M9.4 9.4 20.6 13.7l-4.4 1.3-1.3 4.4z" />
+        <path d="M14 4.1 12 6M5.1 8 2.2 7.2M6 12l-1.9 2M7.2 2.2 8 5.1" />
+      </svg>
       Let&rsquo;s Dive In!
       <svg className="dive-button-arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
         <path d="M12 4.5v14m0 0 5.5-5.5M12 18.5 6.5 13" />

@@ -1,7 +1,7 @@
 /**
  * The travel photographs.
  *
- * One manifest, two presentations. Three of them float in the gutter beside the
+ * One manifest, two presentations. Two of them float in the gutter beside the
  * About prose as ordinary drifting objects — `src/data/objects.ts` reads them
  * from here so a caption or a ratio is only ever written once. The rest, and on
  * a narrow viewport all of them, hang on the wall at the foot of About.
@@ -22,7 +22,7 @@ export interface TravelPhoto {
   aspect: number;
   /**
    * Also drifts in the About gutter from 1024px up (see `src/data/objects.ts`).
-   * The wall stands these three down at that width, because the gutter has
+   * The wall stands these two down at that width, because the gutter has
    * them — below it there is no gutter, so the wall shows all nineteen.
    */
   gutter?: boolean;
@@ -123,7 +123,6 @@ export const travelPhotos: TravelPhoto[] = [
     city: "Lisbon",
     country: "Portugal",
     aspect: 0.75,
-    gutter: true,
   },
   {
     id: "sintra",

@@ -786,7 +786,7 @@
  * The About gutter
  *
  * The run of column left under the About portrait, degrees and links, and the
- * three travel photographs that fall down it.
+ * two travel photographs that fall down it.
  *
  * A flex column rather than slots placed at a depth, which is the one thing
  * that actually keeps a print off the text. The stack above is a few hundred
@@ -798,7 +798,7 @@
  * under the text, and the column is the only thing deciding where that starts.
  *
  * Below 1024px the prose takes the full width, there is no second column, and
- * the wall at the foot of About carries these same three prints in the page
+ * the wall at the foot of About carries these same two prints in the page
  * instead — see the `data-gutter` rule further down.
  * ------------------------------------------------------------------ */
 
@@ -877,7 +877,7 @@
   margin-bottom: 3rem;
 }
 
-/* The three prints that drift in the About gutter from 1024px up stand down
+/* The two prints that drift in the About gutter from 1024px up stand down
    here, so the same photograph is never on screen twice. Below that width
    there is no gutter and the wall carries all nineteen. This is an attribute
    rather than a `lg:hidden` class because the `display` above would otherwise
@@ -1243,15 +1243,17 @@
 
 @media (min-width: 768px) {
   /* The identity sits high in the stage rather than centred in it, so the name
-     follows close on the banner. */
+     follows straight on from the banner — near enough to read as the caption
+     to the cover art rather than as the head of a second screen. What is left
+     is the banner's own fade, which the name would otherwise sit inside. */
   .beach-stage {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     min-height: 100vh;
     min-height: 100svh;
-    padding-top: 9vh;
-    padding-top: 9svh;
+    padding-top: 2vh;
+    padding-top: 2svh;
   }
 
   .hero-surface {
@@ -1301,28 +1303,63 @@
   }
 }
 
-/* A ring going out from it, the way a ring goes out from something dropped in
-   water. It is what makes the button read as the thing to press without any
-   of it being loud. */
+/* Rings going out from it, the way rings go out from something dropped in
+   water. It is what makes the button read as the thing to press.
+ *
+ * Two of them, half a cycle apart, so there is always one on the sand: a lone
+ * ring on a 3.4s loop spends most of its life faded out, and a reader glancing
+ * at the beach could easily never catch it. The pair also gives the spacing
+ * that reads as water — a ring, then another behind it — rather than as a
+ * single button blinking. They are drawn at near-full --stamp on a 2px line,
+ * because this is sitting on lit sand and a hairline at half alpha
+ * disappears into it. */
+.dive-button::before,
 .dive-button::after {
   content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  border: 1px solid color-mix(in srgb, var(--stamp) 55%, transparent);
-  animation: dive-button-ring 3.4s cubic-bezier(0.2, 0.6, 0.35, 1) infinite;
+  border: 2px solid color-mix(in srgb, var(--stamp) 90%, transparent);
+  animation: dive-button-ring 2.4s cubic-bezier(0.2, 0.6, 0.35, 1) infinite;
   pointer-events: none;
 }
 
+.dive-button::before {
+  animation-delay: 1.2s;
+}
+
+/* The ring starts at the button's own edge, so its first frames are drawn on
+   top of a shape in the same colour and count for nothing. It comes up to full
+   only at 12%, by which point it has cleared the stamp and is on lit sand —
+   that is where the brightness is worth spending, not underneath.
+ *
+ * It grows to the last frame rather than snapping back, so it reads as a ring
+   spreading rather than as an outline fading, and so there is no dead time at
+   the top of the loop: the other ring is already halfway out by then. */
 @keyframes dive-button-ring {
   0% {
     transform: scale(1);
-    opacity: 0.55;
-  }
-  70%,
-  100% {
-    transform: scale(1.22);
     opacity: 0;
+  }
+  12% {
+    opacity: 0.95;
+  }
+  100% {
+    transform: scale(1.42);
+    opacity: 0;
+  }
+}
+
+/* Stilled to a single plain outline where motion is unwelcome. The ring's job
+   is to say "press this", and an outline still says it. */
+@media (prefers-reduced-motion: reduce) {
+  .dive-button::before {
+    display: none;
+  }
+
+  .dive-button::after {
+    animation: none;
+    opacity: 0.9;
   }
 }
 
@@ -1336,6 +1373,42 @@
 
 .dive-button:active {
   transform: translateY(4px);
+}
+
+/* The pointer ahead of the words, drawn at the weight the rest of the site's
+ * line art is drawn at. It taps on the ring's 2.4s clock, a beat before each
+ * leading ring goes, so the two read as one gesture: press, ring. The nudge is down
+ * and right, the direction a hand actually moves on a click. */
+.dive-button-cursor {
+  width: 1.35rem;
+  height: 1.35rem;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  animation: dive-cursor-tap 2.4s ease-in-out infinite;
+}
+
+@keyframes dive-cursor-tap {
+  0%,
+  86%,
+  100% {
+    transform: translate(0, 0);
+  }
+  92% {
+    transform: translate(1px, 1px) scale(0.9);
+  }
+}
+
+/* The pointer stays — it is the part that says "button" — but it stops
+   tapping. Below the rule it cancels, not above it: both are one class, so
+   whichever comes last is the one that lands. */
+@media (prefers-reduced-motion: reduce) {
+  .dive-button-cursor {
+    animation: none;
+  }
 }
 
 .dive-button-arrow {
@@ -1564,6 +1637,34 @@
   .beach-copy {
     transition: none;
   }
+}
+
+/* One ink on the sand.
+ *
+ * Everything written on the beach — the name, the lede, the contact links and
+ * the marks beside them, the degrees and their years — is set in --bone, so the
+ * first screen reads in a single voice instead of the three inks the rest of
+ * the site uses to rank a page. The bands still move --bone down with the
+ * water, so this stays a relationship rather than a fixed hex.
+ *
+ * The dive stamp is the one exception: its label sits on a filled pill and
+ * keeps --stamp-ink, the only colour legible there. The :not()s below are what
+ * hold it out, and each selector is a class deeper than the utility it is
+ * overriding, which is what makes it land without !important.
+ */
+.beach-copy,
+.beach-copy :is(a, dt, dd, span, li):not(.dive-button),
+.beach-copy svg:not(.dive-button-cursor, .dive-button-arrow) {
+  color: var(--bone);
+}
+
+/* The links keep the underline that marks them as links; only the ink moves. */
+.beach-copy a:not(.dive-button) {
+  text-decoration-color: color-mix(in oklch, var(--bone) 45%, transparent);
+}
+
+.beach-copy a:not(.dive-button):hover {
+  text-decoration-color: var(--bone);
 }
 
 /* ---------------------------------------------------------------------

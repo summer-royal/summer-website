@@ -1,12 +1,13 @@
 /**
  * Full-bleed cover image opening the homepage.
  *
- * The asset in public/ is the cover art at roughly 3:1, trimmed of the editor
- * frame it was captured with and of the top 5% of the sky. On desktop the cap
- * bites from ~1570px wide and crops from the bottom, so the banner never pushes
- * the name below the fold. The cap is 520px plus 1.77vw — 5% of the uncropped
- * art's rendered height — so that with the sky trimmed, a capped banner shows
- * 10% more of the bottom of the art than a flat 520px did.
+ * The asset in public/ is the cover art, trimmed of the editor frame it was
+ * captured with, of the sky above it — 5% of the art's height, then a further
+ * 5% — and of 2% off the foot, which leaves it at roughly 3.2:1. On desktop the
+ * cap bites from ~1765px wide and crops from the bottom, so the banner never
+ * pushes the name below the fold. The cap is 520px plus 1.77vw, so that with
+ * the sky trimmed a capped banner shows more of the bottom of the art than a
+ * flat 520px did.
  *
  * Phones crop in and bias right, keeping the subject whole on a narrow screen.
  */
@@ -18,7 +19,7 @@ export function Banner() {
         srcSet="/banner-1200.jpg 1200w, /banner.jpg 2079w"
         sizes="100vw"
         width={2079}
-        height={698}
+        height={649}
         alt="Stanford's Main Quad and Hoover Tower layered with streams of binary code and a glowing network of nodes, with a graduate in a Stanford sash at the right."
         fetchPriority="high"
         className="h-[160px] w-full object-cover object-[72%_50%] sm:h-auto sm:max-h-[calc(520px_+_1.77vw)] sm:object-top"

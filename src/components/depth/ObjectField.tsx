@@ -274,7 +274,7 @@ export function ObjectField({ bandId }: { bandId: BandId }) {
  * it at all.
  *
  * Below 1024px there is no second column to fall down: styles.css stands this
- * whole run down and the wall at the foot of About carries the same three
+ * whole run down and the wall at the foot of About carries the same two
  * prints in the page instead.
  */
 export function GutterField() {
