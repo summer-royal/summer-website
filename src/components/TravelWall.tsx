@@ -85,7 +85,7 @@ function Print({ photo, index }: { photo: TravelPhoto; index: number }) {
     <div
       ref={ref}
       className="travel-print"
-      // Stood down from 1024px up, where this print drifts in the About
+      // Stood down from 1024px up, where this print falls down the About
       // gutter instead — styles.css holds that media query.
       data-gutter={photo.gutter === true ? "" : undefined}
     >
@@ -116,19 +116,18 @@ function Print({ photo, index }: { photo: TravelPhoto; index: number }) {
  * media query rather than a measurement — the wall is laid out correctly on the
  * server and does not shift when hydration lands.
  *
- * Three of these prints also drift in the gutter beside the About prose from
+ * Three of these prints also fall down the gutter beside the About prose from
  * 1024px up, and carry `data-gutter` so that styles.css can stand them down
- * there, so the same photograph is never on screen twice. Below that width
+ * here, so the same photograph is never on screen twice. Below that width
  * there is no gutter and the wall carries all nineteen.
  */
 export function TravelWall() {
   return (
     // A printed résumé has no use for nineteen holiday photographs.
     <div data-print="hide">
-      {/* The run of empty column between the About prose and this label is
-          also the runway the three gutter prints fall down — they need room to
-          rise and rock clear of both the portrait above and this wall below.
-          See the depths given to them in src/data/objects.ts. */}
+      {/* This gap is also the bottom of the runway the three gutter prints
+          fall down — they need room to rise and rock clear of both the links
+          above them and this wall below. See .about-gutter in styles.css. */}
       <Rise className="mt-24 sm:mt-40">
         <RiseItem as="header">
           <p className="text-micro tracking-[0.18em] text-sound">TRAVEL</p>

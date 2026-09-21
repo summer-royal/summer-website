@@ -52,9 +52,11 @@ export interface DriftObject {
    * broken image, not as distance, so a photograph's depth is carried by its
    * parallax rate alone.
    *
-   * They also need a column to float down: below 1024px the About prose takes
-   * the full width, so styles.css hides these slots and the wall at the foot of
-   * About shows those same prints in the page instead.
+   * They also need a column to float down, so they are not placed at a depth in
+   * the band at all: they fall in normal flow down whatever is left of the
+   * About column under the portrait and the lists — see GutterField. Below
+   * 1024px the prose takes the full width, there is no column left, and the
+   * wall at the foot of About shows those same prints in the page instead.
    */
   photo?: boolean;
   /** Printed under a photograph, the way a location is noted under a print. */
@@ -99,10 +101,14 @@ export const LAYER_TREATMENT: Record<
  *
  * It now sets that movement too, and trades the axes round. A drifting object
  * has open water above and below it; the three prints in the About gutter have
- * a portrait fixed above them and a wall fixed below, and only about seven
- * hundred pixels between the two. So a print rises less than the layer it sits
- * on would have it rise, and in exchange crosses and rocks further — the room
- * it has is sideways, and rocking is the part that reads as floating anyway.
+ * the lists fixed above them and the wall fixed below, and only the leftover
+ * column between the two. So a print rises less than the layer it sits on would
+ * have it rise, and in exchange crosses and rocks further — the room it has is
+ * sideways, and rocking is the part that reads as floating anyway.
+ *
+ * The parallax here is also what sets the gap in styles.css between one gutter
+ * print and the next: two of them converge as the scroll passes, and the column
+ * has to be loose enough that they never meet.
  */
 export const PHOTO_TREATMENT = {
   parallax: 58,
@@ -117,16 +123,22 @@ export const PHOTO_TREATMENT = {
  *
  * The photograph itself — file, alt text, place, ratio — is read from the
  * travel manifest, so the wall at the foot of About and the gutter beside its
- * prose are always showing the same print described the same way. Only the
- * placement is given here, which is the one thing the wall has no use for.
+ * prose are always showing the same print described the same way. Only how it
+ * hangs is given here, which is the one thing the wall has no use for.
+ *
+ * `depth` orders these three down the gutter and nothing else: a print falls in
+ * the column left under the About text rather than at a depth in the band, so
+ * there is no page position to give it. `x` is likewise the band field's, not
+ * the gutter's — a print is centred in the column it falls down.
  */
 function print(
   id: string,
-  place: Pick<DriftObject, "depth" | "x" | "driftSpeed" | "rotation" | "scale" | "tint">,
+  place: Pick<DriftObject, "depth" | "driftSpeed" | "rotation" | "scale" | "tint">,
 ): DriftObject {
   const photo = travelPhoto(id);
   return {
     ...place,
+    x: 50,
     id: `photo-${photo.id}`,
     src: photo.src,
     alt: photo.alt,
@@ -146,8 +158,8 @@ function print(
  * writing alone.
  * Mid-water: a trophy, for the awards it falls beside.
  * Through the About band: three of the travel photographs, falling down the
- * empty half of the About column under the portrait that anchors the top of it,
- * and clear of the wall that carries the rest at the foot of the section.
+ * column left under the portrait and the lists that anchor the top of it, and
+ * clear of the wall that carries the rest at the foot of the section.
  * Past QUIET_DEPTH: nothing at all.
  */
 export const driftObjects: DriftObject[] = [
@@ -167,7 +179,6 @@ export const driftObjects: DriftObject[] = [
   },
   print("oxford", {
     depth: 1935,
-    x: 16,
     driftSpeed: 0.5,
     rotation: 4,
     scale: 1.25,
@@ -175,7 +186,6 @@ export const driftObjects: DriftObject[] = [
   }),
   print("tahoe", {
     depth: 1948,
-    x: 16,
     driftSpeed: 0.62,
     rotation: -6,
     scale: 1.08,
@@ -183,7 +193,6 @@ export const driftObjects: DriftObject[] = [
   }),
   print("lisbon", {
     depth: 1961,
-    x: 19,
     driftSpeed: 0.45,
     rotation: 5,
     scale: 1.25,
@@ -191,9 +200,21 @@ export const driftObjects: DriftObject[] = [
   }),
 ];
 
-/** Objects grouped by the band they fall in, so each section renders its own. */
+/**
+ * Objects grouped by the band they fall in, so each section renders its own.
+ *
+ * Photographs are not among them: they are hung in the About gutter in flow
+ * rather than placed at a depth, and `gutterPrints` below is what carries them.
+ */
 export function objectsInBand(id: BandId, compactOnly: boolean): DriftObject[] {
   return driftObjects.filter(
-    (o) => o.depth <= QUIET_DEPTH && bandAtDepth(o.depth).id === id && (!compactOnly || o.compact),
+    (o) =>
+      o.photo !== true &&
+      o.depth <= QUIET_DEPTH &&
+      bandAtDepth(o.depth).id === id &&
+      (!compactOnly || o.compact),
   );
 }
+
+/** The photographs that fall down the About gutter, in the order they hang. */
+export const gutterPrints: DriftObject[] = driftObjects.filter((o) => o.photo === true);

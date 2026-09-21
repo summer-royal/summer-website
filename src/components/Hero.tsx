@@ -1,7 +1,8 @@
 import { useState } from "react";
 
-import { site } from "@/data/site";
+import { profileLinks, site } from "@/data/site";
 import { Banner } from "./Banner";
+import { ProfileIcon } from "./ProfileIcon";
 import { DiveButton } from "./Dive";
 import { DepthBand } from "./depth/DepthBand";
 
@@ -22,13 +23,6 @@ import { DepthBand } from "./depth/DepthBand";
  */
 export function Hero() {
   const [diving, setDiving] = useState(false);
-
-  const links = [
-    { label: "Email", href: `mailto:${site.alumniEmail}` },
-    { label: "LinkedIn", href: site.linkedin },
-    { label: "GitHub", href: site.githubPortfolio },
-    { label: "Résumé (PDF)", href: site.resume },
-  ];
 
   return (
     <DepthBand band="hero" className="min-h-svh overflow-clip">
@@ -55,8 +49,9 @@ export function Hero() {
             className="reveal mt-10 flex flex-wrap gap-x-6 gap-y-3 text-base"
             style={{ animationDelay: "320ms" }}
           >
-            {links.map((l) => (
-              <li key={l.label}>
+            {profileLinks.map((l) => (
+              <li key={l.label} className="flex items-center gap-2">
+                <ProfileIcon label={l.label} />
                 <a
                   className="link-signal"
                   href={l.href}

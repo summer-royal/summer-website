@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type RefObject } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type RefObject } from "react";
 import { motion, useTransform } from "motion/react";
 
 import { positionInBand, type BandId } from "@/lib/depth";
@@ -6,6 +6,7 @@ import {
   LAYER_BASE_SIZE,
   LAYER_TREATMENT,
   PHOTO_TREATMENT,
+  gutterPrints,
   objectsInBand,
   type DriftObject,
 } from "@/data/objects";
@@ -37,14 +38,16 @@ function useNearViewport(ref: RefObject<HTMLElement | null>): boolean {
 /**
  * One drifting object.
  *
- * The slot is placed once with `top`/`left` and never animated. Everything that
- * moves is a transform or an opacity: the pass (scroll-driven, and sprung, so
- * the object rises, drifts sideways and turns a little behind the scroll rather
- * than with it) and the ambient bob (a CSS keyframe, so it costs the compositor
- * nothing). Well outside the viewport the whole inner tree unmounts, which also
- * drops `will-change`.
+ * The slot is placed once and never animated — absolutely, at `at` of the way
+ * down its band, or, when no `at` is given, as an ordinary block that takes its
+ * place in whatever column is laying it out. Everything that moves is a
+ * transform or an opacity: the pass (scroll-driven, and sprung, so the object
+ * rises, drifts sideways and turns a little behind the scroll rather than with
+ * it) and the ambient bob (a CSS keyframe, so it costs the compositor nothing).
+ * Well outside the viewport the whole inner tree unmounts, which also drops
+ * `will-change`.
  */
-function DriftObjectView({ object, bandId }: { object: DriftObject; bandId: BandId }) {
+function DriftObjectView({ object, at }: { object: DriftObject; at?: number }) {
   const { mode, narrow } = useDepth();
   const slotRef = useRef<HTMLDivElement>(null);
   const near = useNearViewport(slotRef);
@@ -66,7 +69,6 @@ function DriftObjectView({ object, bandId }: { object: DriftObject; bandId: Band
   // Loosened, so the object trails the scroll and rocks back rather than being
   // pinned to it. Everything below rides this except the fade.
   const settled = useSettled(pass);
-  const at = positionInBand(object.depth, bandId);
 
   const still = mode === "reduced";
   const travel = still ? 0 : drawn.parallax;
@@ -83,20 +85,20 @@ function DriftObjectView({ object, bandId }: { object: DriftObject; bandId: Band
   const fade = drawn.opacity;
   const opacity = useTransform(pass, [0, 0.18, 0.82, 1], [0, fade, fade, 0], { clamp: true });
 
-  return (
-    <div
-      ref={slotRef}
-      className="drift-slot"
-      data-photo={object.photo}
-      style={{
+  const inFlow = at === undefined;
+  const placed: CSSProperties = inFlow
+    ? { width, height }
+    : {
         top: `${at * 100}%`,
         left: `${object.x}%`,
         width,
         height,
         marginLeft: -width / 2,
         marginTop: -height / 2,
-      }}
-    >
+      };
+
+  return (
+    <div ref={slotRef} className={inFlow ? "gutter-print" : "drift-slot"} style={placed}>
       {near && (
         <motion.div
           className="h-full w-full"
@@ -249,7 +251,42 @@ export function ObjectField({ bandId }: { bandId: BandId }) {
   return (
     <div className="drift-field" aria-hidden="true" data-print="hide">
       {objects.map((object) => (
-        <DriftObjectView key={object.id} object={object} bandId={bandId} />
+        <DriftObjectView
+          key={object.id}
+          object={object}
+          at={positionInBand(object.depth, bandId)}
+        />
+      ))}
+    </div>
+  );
+}
+
+/**
+ * The travel photographs that fall down the About gutter.
+ *
+ * Laid out in normal flow rather than at a depth in the band, which is the
+ * whole point of them being here instead of in the field above. What they have
+ * to stay clear of — the portrait, the degrees and the links — is a stack of
+ * text whose height in pixels has nothing to do with the height of the About
+ * band, so any fraction of the way down the band is a guess, and a guess that
+ * lands a print across the links the moment either one changes. In flow they
+ * take the column that is actually left under the text and cannot be drawn over
+ * it at all.
+ *
+ * Below 1024px there is no second column to fall down: styles.css stands this
+ * whole run down and the wall at the foot of About carries the same three
+ * prints in the page instead.
+ */
+export function GutterField() {
+  const { narrow, armed } = useDepth();
+
+  // Nothing renders before hydration: the page is complete without it.
+  if (!armed || narrow) return null;
+
+  return (
+    <div className="about-gutter" aria-hidden="true" data-print="hide">
+      {gutterPrints.map((object) => (
+        <DriftObjectView key={object.id} object={object} />
       ))}
     </div>
   );

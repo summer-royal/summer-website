@@ -55,3 +55,18 @@ export const site: SiteData = {
   metaDescription:
     "Summer Royal is a computer scientist working at the intersection of AI and medicine — RAG and LLM pipelines that surface chemotherapy neurotoxicity hidden in clinical notes.",
 };
+
+export interface ProfileLink {
+  label: string;
+  href: string;
+}
+
+/** The contact row the beach leads with, repeated in About so someone who
+ *  arrives at the bottom of the dive never has to swim back up for it. One
+ *  list, so the two cannot drift apart. */
+export const profileLinks: ProfileLink[] = [
+  { label: "Email", href: `mailto:${site.alumniEmail}` },
+  { label: "LinkedIn", href: site.linkedin },
+  { label: "GitHub", href: site.githubPortfolio },
+  { label: "Résumé (PDF)", href: site.resume },
+];

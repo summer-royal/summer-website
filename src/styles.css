@@ -782,13 +782,55 @@
   color: var(--sound);
 }
 
-/* The photographs float in the gutter beside the About prose. Below 1024px the
-   prose takes the full width and there is no gutter, so the slots stand down
-   and the About section prints the same photographs in the page instead. */
-@media (max-width: 1023.98px) {
-  .drift-slot[data-photo] {
-    display: none;
+/* ---------------------------------------------------------------------
+ * The About gutter
+ *
+ * The run of column left under the About portrait, degrees and links, and the
+ * three travel photographs that fall down it.
+ *
+ * A flex column rather than slots placed at a depth, which is the one thing
+ * that actually keeps a print off the text. The stack above is a few hundred
+ * pixels of portrait and two lists; the band it sits in is several thousand
+ * pixels tall because of the travel wall at the foot of it. The two have no
+ * relation, so a print placed a fraction of the way down the band lands
+ * wherever that arithmetic puts it — which is how three of them came to be
+ * drawn across the contact links. In flow the prints simply take what is left
+ * under the text, and the column is the only thing deciding where that starts.
+ *
+ * Below 1024px the prose takes the full width, there is no second column, and
+ * the wall at the foot of About carries these same three prints in the page
+ * instead — see the `data-gutter` rule further down.
+ * ------------------------------------------------------------------ */
+
+.about-gutter {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .about-gutter {
+    display: flex;
+    /* Takes the height the grid row has left over, so the prints spread down
+       the whole run rather than bunching under the links. */
+    flex: 1 1 auto;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    /* Clear of the links above before a single print has been placed. */
+    margin-top: 4rem;
+    /* A floor under the spread, for the case where the column has no room to
+       spare: a print converges on the one below it as the scroll carries them
+       past, and this is what lets them lean together for a whole pass and
+       still never meet. See PHOTO_TREATMENT. */
+    gap: 2.5rem;
   }
+}
+
+.gutter-print {
+  position: relative;
+  flex: 0 0 auto;
+  /* The place printed under a print hangs outside its frame, so the frame
+     leaves room for it rather than the next print sitting on top of it. */
+  margin-bottom: 1.75rem;
 }
 
 /* ---------------------------------------------------------------------
@@ -1104,22 +1146,38 @@
 }
 
 @media screen and (min-width: 1024px) {
-  /* Only the top two-thirds is held open. That is where the illustrations are
-     drawn; below it is nothing but the tail of the soundings, which may hang
-     into the gap under a short entry without reaching the next header. */
+  /* A floor, not a height. The picture now runs the depth of the entry, so a
+     two-bullet role would otherwise crop it to a sliver; this keeps the short
+     entries tall enough to read as pictures. */
   .role-body[data-pictured] {
     min-height: calc(var(--picture-h) * 0.65);
   }
 
+  /* Hung from the rule and taken down to the foot of the writing: pinning both
+     edges rather than setting a height is what lands the bottom of the picture
+     on the bottom of the last sounding, whatever the entry's length. The
+     illustrations sit in the top right of their board and `object-fit: cover`
+     crops from the left and the bottom, so the subject survives the stretch. */
   .role-picture {
     position: absolute;
     top: 0;
+    bottom: 0;
     right: 0;
     width: var(--picture-w);
-    height: var(--picture-h);
+    height: auto;
     aspect-ratio: auto;
     margin: 0;
     pointer-events: none;
+  }
+
+  /* Unless the role names a bullet to stop on. An entry whose writing runs on
+     well past what the illustration has to say would otherwise draw the frame
+     out into a column; this lands its foot on the foot of that bullet instead.
+     The depth is measured in Experience.tsx and handed over as a variable,
+     since only the layout knows where the line actually falls. */
+  .role-body[data-picture-stop] .role-picture {
+    bottom: auto;
+    height: var(--picture-stop);
   }
 }
 

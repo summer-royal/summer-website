@@ -18,6 +18,13 @@ export interface Role {
    * technology skips it.
    */
   image?: string;
+  /**
+   * The bullet the picture's foot lands on, counting from 1. Left out, the
+   * picture runs the whole depth of the entry. Worth setting where the writing
+   * carries on well past what the illustration has to say, so the frame is not
+   * stretched into a column.
+   */
+  imageStop?: number;
   projects: Project[];
 }
 
@@ -56,7 +63,7 @@ export const experience: Role[] = [
     dates: "2024",
     context:
       "Melio is a biotechnology company that builds rapid, culture-free diagnostic platforms to detect bloodborne pathogens and bloodstream infections. Melio is a Fogarty Innovation portfolio company.",
-    image: "/experience/melio.svg",
+    image: "/experience/melio.jpg",
     projects: [
       {
         summary:
@@ -79,7 +86,7 @@ export const experience: Role[] = [
     dates: "2024",
     context:
       "Immergo Labs is an NSF-funded digital health company that builds an extended reality (XR) and AI-powered platform for physical rehabilitation and remote movement care. Immergo Labs is a Fogarty Innovation portfolio company.",
-    image: "/experience/immergo-labs.svg",
+    image: "/experience/immergo-labs.jpg",
     projects: [
       {
         summary:
@@ -102,7 +109,7 @@ export const experience: Role[] = [
     dates: "2024",
     context:
       "Fogarty Innovation is an action-oriented nonprofit organization that advances human health by accelerating medtech innovation from concept to clinical impact. Melio and Immergo Labs are Fogarty portfolio companies.",
-    image: "/experience/fogarty-innovation.svg",
+    image: "/experience/fogarty-innovation.jpg",
     projects: [
       {
         summary:
@@ -121,7 +128,7 @@ export const experience: Role[] = [
     dates: "2023",
     context:
       "Skywalk is a software and deep-technology development company focused on building computing devices and specialized software, such as a voicebuds audio device and assistive wrist-worn devices for interfacing with technology.",
-    image: "/experience/skywalk.svg",
+    image: "/experience/skywalk.jpg",
     projects: [
       {
         summary:
@@ -144,7 +151,7 @@ export const experience: Role[] = [
     dates: "2022",
     context:
       "Argo AI was an autonomous driving technology company backed by Ford, Volkswagen, Lyft, and Walmart. I worked on the System Fault Detection & Management team.",
-    image: "/experience/argo-ai.svg",
+    image: "/experience/argo-ai.jpg",
     projects: [
       {
         summary:
@@ -168,7 +175,8 @@ export const experience: Role[] = [
     title: "Teacher / Teaching Assistant",
     location: "Bay Area, CA",
     dates: "2021 — Present",
-    image: "/experience/peninsula-tutoring.svg",
+    image: "/experience/teaching.jpg",
+    imageStop: 2,
     projects: [
       {
         summary:

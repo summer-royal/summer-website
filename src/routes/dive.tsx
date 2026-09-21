@@ -9,6 +9,7 @@ import { SideProjects } from "@/components/SideProjects";
 import { Clinical } from "@/components/Clinical";
 import { Community } from "@/components/Community";
 import { About } from "@/components/About";
+import { ProfileIcon } from "@/components/ProfileIcon";
 import { Reading } from "@/components/Reading";
 import { DescentBand } from "@/components/Section";
 import { DepthProvider } from "@/components/depth/DepthContext";
@@ -52,26 +53,35 @@ function Dive() {
             <p>
               {site.name} — {site.location}
             </p>
-            <p className="flex gap-5">
-              <a className="link-signal" href={`mailto:${site.email}`}>
-                Email
-              </a>
-              <a
-                className="link-signal"
-                href={site.linkedin}
-                target="_blank"
-                rel="noreferrer noopener"
-              >
-                LinkedIn
-              </a>
-              <a
-                className="link-signal"
-                href={site.github}
-                target="_blank"
-                rel="noreferrer noopener"
-              >
-                GitHub
-              </a>
+            <p className="flex flex-wrap gap-x-5 gap-y-2">
+              <span className="inline-flex items-center gap-2">
+                <ProfileIcon label="Email" />
+                <a className="link-signal" href={`mailto:${site.email}`}>
+                  Email
+                </a>
+              </span>
+              <span className="inline-flex items-center gap-2">
+                <ProfileIcon label="LinkedIn" />
+                <a
+                  className="link-signal"
+                  href={site.linkedin}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  LinkedIn
+                </a>
+              </span>
+              <span className="inline-flex items-center gap-2">
+                <ProfileIcon label="GitHub" />
+                <a
+                  className="link-signal"
+                  href={site.github}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  GitHub
+                </a>
+              </span>
             </p>
           </div>
         </footer>
