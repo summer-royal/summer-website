@@ -23,38 +23,13 @@ export interface Role {
 
 export const experience: Role[] = [
   {
-    employer: "Modeling Biomedical Systems Course",
-    title: "Teaching Assistant",
-    location: "Stanford, CA",
-    dates: "2026",
-    context:
-      "At the core of informatics is the problem of creating computable models of biomedical phenomena. This course explores methods for modeling biomedical systems with an emphasis on contemporary semantic technology, including knowledge graphs, and is open only to Clinical Informatics Management M.S. students, who are working professionals in the field. Topics: data modeling, knowledge representation, controlled terminologies, ontologies, reusable problem solvers, and modeling problems in healthcare information technology and other aspects of informatics. Students acquire hands-on experience with several systems and tools.",
-    projects: [
-      {
-        summary: "Write the course's homework assignments.",
-      },
-      {
-        summary: "Grade homework assignments.",
-      },
-      {
-        summary: "Host weekly office hours.",
-      },
-      {
-        summary: "Advise on course content and curriculum.",
-      },
-      {
-        summary: "Lead in-class workshops.",
-      },
-    ],
-  },
-  {
     employer: "Inspirit AI",
     title: "Product Manager",
     location: "Palo Alto, CA",
     dates: "2025 — Present",
     context:
       "Inspirit AI Scholars is an artificial intelligence education program for high school students, developed by Stanford and MIT alumni and graduate students.",
-    image: "/experience/inspirit-ai.svg",
+    image: "/experience/inspirit-ai.jpg",
     projects: [
       {
         summary:
@@ -163,26 +138,6 @@ export const experience: Role[] = [
     ],
   },
   {
-    employer: "Needs Finding in Healthcare Course",
-    title: "Teaching Assistant",
-    location: "Stanford, CA",
-    dates: "2023",
-    context:
-      "Needs Finding in Healthcare is a Sophomore College (SoCo) experiential course offered through Stanford Biodesign that teaches undergraduates how to identify unmet medical problems through direct clinical observation. Students shadow in the hospital, identify unmet clinical needs, and apply the biodesign process to those needs.",
-    projects: [
-      {
-        summary:
-          "Helped plan the course curriculum, including choosing and organizing educational field trips.",
-      },
-      {
-        summary: "Held office hours to answer student questions.",
-      },
-      {
-        summary: "Facilitated class discussions and answered student questions during class.",
-      },
-    ],
-  },
-  {
     employer: "Argo AI",
     title: "Software Engineer Intern",
     location: "Palo Alto, CA",
@@ -210,35 +165,45 @@ export const experience: Role[] = [
   },
   {
     employer: "",
-    title: "Teacher",
+    title: "Teacher / Teaching Assistant",
     location: "Bay Area, CA",
     dates: "2021 — Present",
     image: "/experience/peninsula-tutoring.svg",
     projects: [
       {
         summary:
-          "A Breakout Mentors: Taught students ages 8-12 the fundamentals of computer science and programming/",
-        bold: "Breakout Mentors",
+          "Modeling Biomedical Systems Course Teaching Assistant at Stanford University: This course explores methods for modeling biomedical systems with an emphasis on contemporary semantic technology, including knowledge graphs, and is open only to Clinical Informatics Management M.S. students, who are working professionals in the field. Topics: data modeling, knowledge representation, controlled terminologies, ontologies, reusable problem solvers, and modeling problems in healthcare information technology and other aspects of informatics. Students acquire hands-on experience with modeling tools. I was responsible for writing homework assignments, hosting weekly office hours, grading assignments, advising on the course's curriculum, and running in-class workshops.",
+        bold: "Modeling Biomedical Systems Course Teaching Assistant",
       },
       {
         summary:
-          "At Peninsula Tutoring: Tutored students ages 8-18 in AP Computer Science, AP Calculus, trigonometry, AP Phyiscs, AP Biology, and AP Chemistry",
-        bold: "Peninsula Tutoring",
+          "Needs Finding in Healthcare Course Teaching Assistant at Stanford University: This is a Sophomore College (SoCo) experiential course offered through Stanford Biodesign that teaches undergraduates how to identify unmet medical problems through direct clinical observation. Students shadow in the hospital, identify unmet clinical needs, and apply the biodesign process to those needs. I helped plan the course curriculum, planned and organized educational field trips, held office hours, and helped faciliate in-class workshops.",
+        bold: "Needs Finding in Healthcare Course Teaching Assistant",
       },
       {
         summary:
-          "At Harker School: Taught an AI course to high school students.",
-        bold: "Harker School",
+          "Breakout Mentors Instructor: Taught students ages 8-12 the fundamentals of computer science and programming.",
+        bold: "Breakout Mentors Instructor",
       },
       {
         summary:
-          "At Nueva School: Taught an AI course to high school students and an introductory AI course to middle school students.",
-        bold: "Nueva School",
+          "Peninsula Tutoring Instructor: Tutored students ages 8-18 in AP Computer Science, AP Calculus, trigonometry, AP Phyiscs, AP Biology, and AP Chemistry.",
+        bold: "Peninsula Tutoring Instructor",
       },
       {
         summary:
-          "At Phillips Academy Exeter: Taught a generative AI course to high school seniors.",
-        bold: "Phillips Academy Exeter",
+          "Harker School Instructor: Taught an AI course to high school students.",
+        bold: "Harker School Instructor",
+      },
+      {
+        summary:
+          "Nueva School Instructor: Taught an AI course to high school students and an introductory AI course to middle school students.",
+        bold: "Nueva School Instructor",
+      },
+      {
+        summary:
+          "Phillips Academy Exeter Instructor: Taught a generative AI course to high school seniors.",
+        bold: "Phillips Academy Exeter Instructor",
       },
     ],
   },
