@@ -48,7 +48,7 @@ export const site: SiteData = {
   location: "Mountain View, California",
   email: "summerroyal25@gmail.com",
   alumniEmail: "summerroyal@alumni.stanford.edu",
-  linkedin: "https://www.linkedin.com/in/summerroyal",
+  linkedin: "https://www.linkedin.com/in/summer-royal-7824b5211/",
   github: "https://github.com/summerroyal",
   githubPortfolio: "https://github.com/summer-royal/github-portfolio",
   resume: "/resume.pdf",
