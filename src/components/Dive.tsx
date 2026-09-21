@@ -29,8 +29,11 @@ const SWAP_MS = 2666;
  * The button is a real link to that page, so it works before hydration and
  * with no JavaScript at all, and a modified click still opens a new tab the
  * way any link would. Everything here is an upgrade laid over that link.
+ *
+ * `onDive` fires only on the animated path: under prefers-reduced-motion the
+ * press goes straight across, so there is no wash to clear the sand for.
  */
-export function DiveButton() {
+export function DiveButton({ onDive }: { onDive?: () => void }) {
   const { mode } = useDepth();
   const raiseTide = useTide();
   const navigate = useNavigate();
@@ -56,9 +59,12 @@ export function DiveButton() {
       return;
     }
 
+    // The beach clears, the water comes up, and the page changes under it —
+    // one press, and all three are on the same clock.
+    onDive?.();
     raiseTide();
     swapRef.current = window.setTimeout(cross, SWAP_MS);
-  }, [mode, navigate, raiseTide]);
+  }, [mode, navigate, onDive, raiseTide]);
 
   return (
     <a

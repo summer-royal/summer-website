@@ -481,7 +481,7 @@ export function SideProjects() {
                       target="_blank"
                       rel="noreferrer noopener"
                     >
-                      Live
+                      Website
                     </a>
                   )}
                   {p.repo && (

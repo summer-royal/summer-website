@@ -165,13 +165,13 @@ export const driftObjects: DriftObject[] = [
     aspect: 0.76,
     compact: true,
   },
-  print("honolulu", {
+  print("oxford", {
     depth: 1935,
     x: 16,
     driftSpeed: 0.5,
     rotation: 4,
-    scale: 1.05,
-    tint: "#7fd8c6",
+    scale: 1.25,
+    tint: "#c9a9de",
   }),
   print("tahoe", {
     depth: 1948,

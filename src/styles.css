@@ -1479,6 +1479,35 @@
   }
 }
 
+/* Everything written on the sand, and the way it leaves.
+ *
+ * The press is the reader saying they are done with the beach, so the copy
+ * goes and leaves the banner, the sand, the board and the water. It clears
+ * inside half a second — the board loads at 14% of the dive and she is off it
+ * by 20%, so the stage has to be empty before she moves, not while she does.
+ *
+ * Faded and left in place rather than unmounted: this block is what gives the
+ * beach its height, and pulling it out of the flow mid-wash would collapse the
+ * band and snatch the sand out from under the water on its way up. */
+.beach-copy {
+  transition:
+    opacity 480ms ease,
+    transform 480ms ease;
+}
+
+.beach-copy[data-diving] {
+  opacity: 0;
+  transform: translateY(-10px);
+  /* Nothing left to press, and nothing to catch a stray click on the way. */
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .beach-copy {
+    transition: none;
+  }
+}
+
 /* ---------------------------------------------------------------------
  * The diver
  *
@@ -1772,7 +1801,10 @@
 }
 
 .dive-figure-skin {
-  fill: #f4e2d6;
+  /* Fair, with a warm rather than a pink undertone — read off the photograph
+     and nudged a shade deeper than it looks there, because the beach she
+     crosses is itself a warm off-white and a paler tint dissolves into it. */
+  fill: #f3dac8;
   stroke: currentColor;
   stroke-width: 1.7;
   stroke-linejoin: round;

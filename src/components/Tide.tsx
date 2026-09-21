@@ -14,14 +14,21 @@ import { Diver } from "./Diver";
 /**
  * The wash, end to end.
  *
- * The crest takes about five seconds to cross the viewport and the water
+ * The crest takes under three seconds to cross the viewport and the water
  * spends what is left draining after it — slow enough to be watched, which is
  * the whole point of it.
  *
  * TIDE_MS reaches the stylesheet as a custom property on the tide itself, so
  * the CSS cannot fall out of step with the timer here.
+ *
+ * It is also not free to set. The dive is pinned to a *fraction* of this run,
+ * not to a moment, so DIVE_MS / TIDE_MS is what decides whether she lands on
+ * the foam or under it — it wants to stay near 0.38, which is where the crest
+ * is at her depth. At 6000 against a 2666ms dive the ratio went to 0.44 and
+ * she was entering seventeen points of viewport below a wave that had already
+ * gone past her. Retime this and retime Diver.tsx with it.
  */
-const TIDE_MS = 6000;
+const TIDE_MS = 7000;
 
 const TideContext = createContext<() => void>(() => {});
 

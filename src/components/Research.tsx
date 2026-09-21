@@ -41,9 +41,15 @@ function Lab({ lab }: { lab: ResearchLab }) {
                     <RiseItem as="p" className="font-display text-h3 text-sound">
                       {beat.label}
                     </RiseItem>
-                    <RiseItem as="p" className="measure mt-2 leading-relaxed text-bone">
-                      {beat.body}
-                    </RiseItem>
+                    {beat.body.split("\n\n").map((paragraph, i) => (
+                      <RiseItem
+                        key={i}
+                        as="p"
+                        className="measure mt-2 leading-relaxed text-bone"
+                      >
+                        {paragraph}
+                      </RiseItem>
+                    ))}
                   </Rise>
                 ))}
               </div>

@@ -27,8 +27,8 @@ export interface SiteData {
 }
 
 export const site: SiteData = {
-  name: "Summer Olivia Royal",
-  title: "Summer Olivia Royal — AI for clinical data",
+  name: "Summer Royal",
+  title: "Summer Royal — AI for clinical data",
   positioning: "I am passionate about building human-centered AI systems for clinical applications",
   education: [
     {
@@ -53,5 +53,5 @@ export const site: SiteData = {
   githubPortfolio: "https://github.com/summer-royal/github-portfolio",
   resume: "/resume.pdf",
   metaDescription:
-    "Summer Olivia Royal is a computer scientist working at the intersection of AI and medicine — RAG and LLM pipelines that surface chemotherapy neurotoxicity hidden in clinical notes.",
+    "Summer Royal is a computer scientist working at the intersection of AI and medicine — RAG and LLM pipelines that surface chemotherapy neurotoxicity hidden in clinical notes.",
 };

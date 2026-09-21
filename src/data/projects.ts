@@ -225,7 +225,7 @@ export const sideProjects: SideProject[] = [
       alt: "The Ditch Dat! Head Lice badge — a glum cartoon louse under a stamped wordmark.",
     },
     press: {
-      label: "Honolulu Star-Advertiser",
+      label: "Honolulu Star-Advertiser Newspaper Article",
       href: "https://www.staradvertiser.com/2019/09/06/hawaii-news/lee-cataluna/cataluna-what-this-girl-did-in-the-name-of-science/",
     },
   },

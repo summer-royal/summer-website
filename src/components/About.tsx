@@ -56,7 +56,7 @@ export function About() {
     <Section id="about" title="About" band="about">
       <Rise className="grid gap-10 lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-14">
         <RiseItem>
-          <Frame src={about.portrait} alt="Summer Olivia Royal" ratio="4 / 5" />
+          <Frame src={about.portrait} alt="Summer Royal" ratio="4 / 5" />
         </RiseItem>
 
         <RiseItem>

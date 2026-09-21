@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import { site } from "@/data/site";
 import { Banner } from "./Banner";
 import { DiveButton } from "./Dive";
@@ -10,8 +12,17 @@ import { DepthBand } from "./depth/DepthBand";
  * further down, so the button is the only way off the sand. The band is at
  * least a screen tall and clips at its foot, so the page ends on the beach
  * whatever the viewport, and nothing drifting in it can stretch the scroll.
+ *
+ * Pressing the dive empties it. Everything written on the sand goes, leaving
+ * the banner, the beach, the board and the water — which is the picture the
+ * dive was drawn for, and the only way the board and the copy stop sharing
+ * the same few hundred pixels. The copy moves rather than the dive, because
+ * the board has to stand a body's height clear of the water or there is no
+ * dive left to watch.
  */
 export function Hero() {
+  const [diving, setDiving] = useState(false);
+
   const links = [
     { label: "Email", href: `mailto:${site.alumniEmail}` },
     { label: "LinkedIn", href: site.linkedin },
@@ -24,7 +35,10 @@ export function Hero() {
       <Banner />
       <div className="beach-stage">
         <div aria-hidden="true" data-print="hide" className="hero-surface" />
-        <div className="shell relative flex min-h-[46svh] flex-col justify-center pb-20 pt-8">
+        <div
+          className="beach-copy shell relative flex min-h-[46svh] flex-col justify-center pb-20 pt-8"
+          data-diving={diving || undefined}
+        >
           <h1
             className="reveal text-h1 leading-[1.05] sm:text-display"
             style={{ animationDelay: "80ms" }}
@@ -70,7 +84,7 @@ export function Hero() {
               thing on the beach asking to be pressed, and the middle is
               where the eye ends up. */}
           <div className="reveal mt-12 flex justify-center" style={{ animationDelay: "600ms" }}>
-            <DiveButton />
+            <DiveButton onDive={() => setDiving(true)} />
           </div>
         </div>
       </div>

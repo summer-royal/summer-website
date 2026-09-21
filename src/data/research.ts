@@ -1,5 +1,6 @@
 export interface ResearchBeat {
   label: string;
+  /** A blank line splits the body into separate paragraphs. */
   body: string;
 }
 
@@ -39,13 +40,13 @@ export const research: ResearchLab[] = [
     institution: "Stanford",
     role: "Research Assistant",
     dates: "2024 — 2025",
-    title: "Finding chemotherapy's hidden side effects in the notes",
+    title: "Identifying Neurotoxicity",
     standfirst:
       "An end-to-end machine learning pipeline for early identification of chemotherapy-induced neurotoxicity from the clinical text. My research specifically focused on chemotherapy-induced peripheral neurotoxicity (CIPN) and cancer-related cognitive impairment (CRCI).",
     beats: [
       {
         label: "The clinical problem",
-        body: "Chemotherapy can leave patients with nerve damage (CIPN) and cognitive impairment (CRCI), and both are severely under-reported. There is no standardized test for either, most symptoms depend on the patient reporting them, and physicians document them inconsistently, so administrative code counts underestimate how often cases of neurotoxicity occur. Physicians often note the symptoms in the patient's file, but rarely diagnose neurotoxity explciitly with an ICD code. If the record says it does not happen often, researchers are less liekly to study it, screens for it, or treats it early.",
+        body: "Chemotherapy can leave patients with nerve damage (CIPN) and cognitive impairment (CRCI), and both are severely under-reported. There is no standardized test for either, most symptoms depend on the patient reporting them, and physicians document them inconsistently, so administrative code counts underestimate how often cases of neurotoxicity occur. Physicians often note the symptoms in the patient's file, but rarely diagnose neurotoxity explciitly with an ICD code. If neurotoxicity is (innacurately) perceived as a rare condition, researchers are less liekly to study it, phyiscians are less likely to screen for it, and patients are less likely to get it treated early.",
       },
       {
         label: "The gap",
@@ -53,11 +54,11 @@ export const research: ResearchLab[] = [
       },
       {
         label: "The cohort",
-        body: "Adults in the Stanford Health Care database with a solid tumor at any stage who started chemotherapy between 2014 and 2024: 27,950 patients. Solid tumors make up about 90% of adult cancers and are treated differently from blood cancers. A patient counts as positive when an ICD-10 code for drug-induced polyneuropathy (G62.0) or cognitive symptoms (R41.89) appears within three months of starting chemotherapy, the window in which symptoms typically emerge. The 302 patients already diagnosed in the three months before treatment were excluded, so the positives reflect neurotoxicity that follows chemotherapy rather than predates it.",
+        body: "27,950 adult patients in the Stanford Health Care database with a solid tumor at any stage who started chemotherapy between 2014 and 2024. Solid tumors are treated differently than blood cancers, and solid cancers make up about 90% of adult cancers, so I focused solely on solid tumors. A patient counts as a 'positive case'  if they were diagnsoed with an ICD-10 code for drug-induced polyneuropathy (G62.0) or cognitive symptoms (R41.89) within three months of starting chemotherapy, the window in which symptoms typically emerge. The 302 patients who were already diagnosed in the three months before treatment were excluded from the cohort so that the positive cases would truly reflect neurotoxicity that resulted specifically from chemotherapy rather than another cause.",
       },
       {
-        label: "The approach",
-        body: "The system reads the notes instead of the codes. For positive cases it takes the progress, H&P, telephone encounter, and emergency department notes written between the start of first-line chemotherapy and the diagnosis; for negative cases, a random few per patient that do not explicitly mention neurotoxicity. Most of any note is irrelevant, so a retrieval pipeline called CLEAR narrows it first. Rather than embedding whole notes, it splits them into topic-focused chunks, keeps the clinical entities relevant to neurotoxicity, expands that list with ontologies and an LLM, and returns only the chunks tied to those entities. GPT-4o then labels the symptoms in those chunks zero-shot. No labeled training corpus is required, which is what makes it portable to a new site or a new cohort.",
+        label: "The approach for symptom identification",
+        body: "The first part of this project involved extracting symptoms related to neurotoxicity from clinical notes for the patients in the cohort. I first created a file of all notes of interest. For positive cases, I was only interested in the notes that were written between the start of the first line of chemotherapy up and the date of the neurotoxicity diagnosis. For the instances of \u2018negative\u2019 notes, I selected a few notes per negative patient that do not explicitly mention symptoms of neurotoxicity. I filtered for the specific note types of interest such as progress notes and Emergency Department notes. I created a spreadsheet with the notes of interest including all patient features that were relevant for building a predictive model.\n\nSince the clinical notes contain copious amounts of information, most of which will not be relevant to a patient\u2019s neurotoxicity diagnosis, I ran Retrieval-Augmented Generation (RAG) to reduce the amount of text processed by the LLM to enhance the efficiency and performance of symptom extraction. CLEAR is a RAG pipeline that retrieves relevant clinical information by focusing on clinical entities rather than embedding the entire notes. It splits the notes into chunks where each chunk is focused on a specific topic, filters entities relevant to the query, uses ontologies and LLMs to expand the list of relevant entities, and outputs the note chunks for the selected entities. I then ran zero-shot prompting with an existing LLM API on the note chunks to label symptoms of neurotoxicity.",
       },
       {
         label: "Clinical validation",
@@ -65,21 +66,13 @@ export const research: ResearchLab[] = [
       },
       {
         label: "Predicting it before treatment",
-        body: "On top of those labels, built models that flag patients at elevated risk of chemotherapy-induced neurotoxicity before treatment begins, so physicians can weigh that risk when recommending a regimen. Compared candidate models on hazard ratios, correlated features, and clinical impact, and wrote the model cards that document performance, fairness, and limitations — the interpretability record a model needs before anyone can use it in a clinic.",
-      },
-      {
-        label: "Alongside",
-        body: "Develops supervised models across data modalities to identify factors that influence cancer progression and treatment response, and studies treatment response in relation to neuronal activity, linking signal-level features to patient outcomes.",
+        body: "In addition to developing the symptom labeling scheme, I built a model that flags patients at elevated risk of chemotherapy-induced neurotoxicity before treatment begins. This allows physicians to weigh the risks when recommending a regimen. I compared candidate models on hazard ratios, correlated features, and clinical impact, and wrote the model cards that document performance, fairness, and limitations for interpretability.",
       },
     ],
     facts: [
       {
         label: "FOCUS",
         body: "CIPN (peripheral neuropathy) and CRCI (cognitive impairment) after chemotherapy, in adults with solid tumors.",
-      },
-      {
-        label: "COHORT",
-        body: "Adults with solid tumors who started chemotherapy at Stanford Health Care, 2014–2024. Labeled from ICD-10 G62.0 and R41.89 within three months of treatment.",
       },
       {
         label: "METHODS",
@@ -131,12 +124,14 @@ export const research: ResearchLab[] = [
     /** TODO: add the remaining shareable metrics — recall, and agreement with
      *  the physician labels. */
     metrics: [
-      { value: "27,950", label: "patients in the cohort" },
       { value: "717", label: "ICD-coded neurotoxicity cases within three months of chemotherapy" },
       { value: "100,000+", label: "clinician notes labeled" },
     ],
-    /** TODO: add a preprint, poster, or publication link when available. */
-    link: null,
+    /** TODO: swap in a preprint, poster, or publication link when available. */
+    link: {
+      label: "Boussard Lab at Stanford Medicine",
+      href: "https://med.stanford.edu/boussard-lab.html",
+    },
   },
   {
     id: "oxford-tutorial",

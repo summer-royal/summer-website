@@ -99,7 +99,6 @@ export const travelPhotos: TravelPhoto[] = [
     city: "Honolulu",
     country: "USA",
     aspect: 1.5,
-    gutter: true,
   },
   {
     id: "tamarindo",
@@ -123,7 +122,7 @@ export const travelPhotos: TravelPhoto[] = [
     alt: "On a miradouro above the Alfama rooftops and the Tagus.",
     city: "Lisbon",
     country: "Portugal",
-    aspect: 0.666,
+    aspect: 0.75,
     gutter: true,
   },
   {
@@ -148,7 +147,8 @@ export const travelPhotos: TravelPhoto[] = [
     alt: "Sitting in a stone archway under trailing wisteria.",
     city: "Oxford",
     country: "England",
-    aspect: 0.75,
+    aspect: 0.9,
+    gutter: true,
   },
   {
     id: "stratford-upon-avon",
