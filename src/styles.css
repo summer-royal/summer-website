@@ -879,7 +879,7 @@
 
 /* The two prints that drift in the About gutter from 1024px up stand down
    here, so the same photograph is never on screen twice. Below that width
-   there is no gutter and the wall carries all nineteen. This is an attribute
+   there is no gutter and the wall carries all twenty. This is an attribute
    rather than a `lg:hidden` class because the `display` above would otherwise
    have to win a cascade argument with a utility to be applied at all. */
 @media (min-width: 1024px) {
@@ -1184,6 +1184,108 @@
 @media print {
   .role-picture {
     display: none;
+  }
+}
+
+/* -------------------------------------------------------------------
+ * Folds — writing put away behind a line you press
+ *
+ * The job descriptions in Experience and the beats of each write-up in
+ * Research. Both read as a column of headings with the writing drawn out of
+ * whichever one you ask for. The panel stays in the page rather than being
+ * unmounted: it is clipped by a grid track travelling between 0fr and 1fr,
+ * which is the one honest way to ease a panel open to a height nobody has
+ * measured. `inert` is what closes it to a reader — the clip only hides it.
+ * Print opens every one of them again.
+ *
+ * The markup is in Fold.tsx.
+ * ------------------------------------------------------------------ */
+
+.fold-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  font-size: var(--text-fine);
+  line-height: 1.4;
+  color: var(--signal-ink);
+  /* The rule under it is the same hairline the section headers carry, so the
+     toggle reads as part of the entry's furniture rather than as a control
+     dropped on top of it. */
+  border-bottom: 1px solid color-mix(in oklch, var(--signal-ink) 30%, transparent);
+  padding-bottom: 0.2em;
+  transition:
+    color 160ms ease,
+    border-color 160ms ease;
+}
+
+.fold-toggle:hover {
+  border-bottom-color: var(--signal-ink);
+}
+
+.fold-toggle:focus-visible {
+  outline: 2px solid var(--signal-ink);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+/* The arrowhead, turned over once the panel is open. */
+.fold-toggle-mark {
+  width: 1em;
+  height: 1em;
+  flex: none;
+  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.fold-toggle[aria-expanded="true"] .fold-toggle-mark {
+  transform: rotate(180deg);
+}
+
+.fold {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows 340ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 200ms ease;
+}
+
+/* The clip has to be the grid item itself, and it has to be allowed to shrink
+   below its content: a grid item's automatic minimum size would otherwise hold
+   the track open at its full height and there would be nothing to animate. */
+.fold-clip {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.fold[data-open] {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  transition:
+    grid-template-rows 340ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 260ms ease 80ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fold,
+  .fold[data-open],
+  .fold-toggle-mark {
+    transition: none;
+  }
+}
+
+@media print {
+  .fold-toggle {
+    display: none;
+  }
+
+  /* Everything open on paper — a printed page has no one to click it. */
+  .fold {
+    display: block;
+    opacity: 1;
+  }
+
+  .fold-clip {
+    overflow: visible;
   }
 }
 
@@ -1610,20 +1712,26 @@
   }
 }
 
-/* Everything written on the sand, and the way it leaves.
+/* The beach emptying: the cover art above, the writing below, and the way both
+ * of them leave.
  *
- * The press is the reader saying they are done with the beach, so the copy
- * goes and leaves the banner, the sand, the board and the water. It clears
- * inside half a second — the board loads at 14% of the dive and she is off it
- * by 20%, so the stage has to be empty before she moves, not while she does.
+ * The press is the reader saying they are done with the beach, so the art and
+ * the copy go together and leave the sand, the board and the water. The whole
+ * clearing runs *before* the dive rather than under it — Dive.tsx waits
+ * `--beach-clear` out before it raises the tide, and that same number is where
+ * this duration comes from, so the two cannot drift. The diver fades up over
+ * the first 4% of the dive and the board loads at 14%, both of them standing
+ * inside the banner's own pixels; left up, she springs off a plank planted in
+ * the Main Quad.
  *
- * Faded and left in place rather than unmounted: this block is what gives the
- * beach its height, and pulling it out of the flow mid-wash would collapse the
- * band and snatch the sand out from under the water on its way up. */
+ * Faded and left in place rather than unmounted, both of them: between them
+ * they are what give the beach its height, and pulling either out of the flow
+ * mid-wash would collapse the band and snatch the sand out from under the
+ * water on its way up. */
 .beach-copy {
   transition:
-    opacity 480ms ease,
-    transform 480ms ease;
+    opacity var(--beach-clear, 480ms) ease,
+    transform var(--beach-clear, 480ms) ease;
 }
 
 .beach-copy[data-diving] {
@@ -1633,9 +1741,32 @@
   pointer-events: none;
 }
 
+/* The art dissolves where the copy lifts away. A photograph has no direction
+ * to leave in, and the banner is hard against the top of the page, so any lift
+ * would open a strip of bare sand above it on the way out.
+ *
+ * An animation rather than a transition, because `reveal` is an animation with
+ * `both` fill on this same element and a filled animation outranks any
+ * transition on the same property. Replacing the `animation` shorthand
+ * replaces the reveal outright; the two meet at opacity 1, so nothing jumps. */
+.beach-banner[data-diving] {
+  animation: beach-banner-out var(--beach-clear, 480ms) ease forwards;
+}
+
+@keyframes beach-banner-out {
+  to {
+    opacity: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .beach-copy {
     transition: none;
+  }
+
+  .beach-banner[data-diving] {
+    animation: none;
+    opacity: 0;
   }
 }
 
@@ -1667,6 +1798,68 @@
   text-decoration-color: var(--bone);
 }
 
+/* The name types itself.
+ *
+ * Layout is fixed before the first letter lands: every letter is in the flow
+ * from the start and the ones not yet typed are `visibility: hidden`, which
+ * keeps their boxes. The line therefore breaks in the same place at keystroke
+ * one as at the last, and the lede below it never moves. `pre-wrap` is what
+ * holds the space inside the name, since each character sits in its own span.
+ *
+ * The caret is zero-width and draws its bar outside its own box, so it can be
+ * stepped between letters without pushing anything sideways. It holds steady
+ * while the letters are arriving — a terminal caret stops blinking under the
+ * keys — and blinks only once the name is finished. The site-wide
+ * reduced-motion rule ends the blink on its first iteration, at which point
+ * the caret falls back to its own opacity and simply stands there. */
+.typed-name {
+  white-space: pre-wrap;
+}
+
+.typed-name-letter {
+  visibility: hidden;
+}
+
+.typed-name-letter[data-typed] {
+  visibility: visible;
+}
+
+.typed-caret {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  animation: caret-blink 1.06s steps(1, end) infinite;
+}
+
+/* Sized off the type rather than in pixels: it has to read as a stem of the
+ * face it sits in at both the 2.75rem and the 4rem heading. */
+.typed-caret::before {
+  content: "";
+  position: absolute;
+  left: 0.05em;
+  bottom: -0.08em;
+  width: 0.07em;
+  min-width: 2px;
+  height: 0.88em;
+  background: currentColor;
+}
+
+.typed-name[data-typing] .typed-caret {
+  animation: none;
+  opacity: 1;
+}
+
+@keyframes caret-blink {
+  0%,
+  49.9% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
 /* ---------------------------------------------------------------------
  * The diver
  *
@@ -1690,9 +1883,23 @@
 
 .dive-diver,
 .dive-diver-spray {
-  --diver-h: clamp(122px, 16.5svh, 188px);
+  /* Three times the size she was drawn at, and the flight pays for it. The
+     fall is not a free number — it is whatever is left of the 64svh between
+     where she stands and where the foam is once her own length is taken out
+     of it, and at 49.5svh she takes out 53svh of that 64. So tripling her
+     takes the drop from 46svh to 10.5svh: from nearly three of her own body
+     lengths to a quarter of one. She is far easier to see and she no longer
+     travels much. 2x (33svh / 24.8svh below) is the largest that still moves
+     her a full body length, if the arc is wanted back. */
+  --diver-h: clamp(300px, 49.5svh, 564px);
   --diver-w: calc(var(--diver-h) * 0.5093);
-  --diver-track: clamp(242px, 28vw, 368px);
+  /* Half the board. This is the diver's own abscissa as well as the plank's
+     width — she stands 6.65% along it and the whole track is anchored to the
+     right edge — so halving it does not only shrink the board, it carries her
+     about a third of a screen to the right. The flight still clears: at the
+     widest point of the turn she is 679px from the left on a 1440, where she
+     was 163px. */
+  --diver-track: clamp(363px, 42vw, 552px);
   /* Where she stands, and where the water will be when she arrives. */
   --diver-top: 12svh;
   /* Not where the tide's sheet is — where its *foam* is. See Diver.tsx. */
@@ -1944,110 +2151,18 @@
 
 /* ---- the figure --------------------------------------------------- */
 
-/* The halo is the only reason any of this is legible. She crosses the top of
-   the beach page, and the top of the beach page is a full-bleed photograph of
-   the Quad under a lattice of neon — a 1px teal line over that is simply not
-   there. Two white glows lift her off it and a faint dark one puts an edge
-   back on where the backdrop is pale, so the same drawing survives the photo,
-   the sand and the water without changing colour for any of them. */
+/* She is a cut-out photograph on bare sand: the banner has finished fading
+   before `{up && <Diver />}` mounts her, so there is no neon photograph left
+   underneath to fight, and the pair of white glows that made a 1px line
+   legible over one would now read as a sticker edge. What she needs instead
+   is contact — a soft shadow under her so she sits in the scene rather than
+   on it, and a faint dark spread to hold her edge against sand that is nearly
+   her own value. Nothing white: the halo was for the drawing. */
 .dive-diver-figure {
   display: block;
   width: 100%;
   height: auto;
-  overflow: visible;
-  filter: drop-shadow(0 0 2px rgb(255 255 255 / 0.95)) drop-shadow(0 0 6px rgb(255 255 255 / 0.85))
-    drop-shadow(0 1px 2px rgb(17 48 58 / 0.3));
-}
-
-.dive-figure-skin {
-  /* Fair, with a warm rather than a pink undertone — read off the photograph
-     and nudged a shade deeper than it looks there, because the beach she
-     crosses is itself a warm off-white and a paler tint dissolves into it. */
-  fill: #f3dac8;
-  stroke: currentColor;
-  stroke-width: 1.7;
-  stroke-linejoin: round;
-  stroke-linecap: round;
-}
-
-.dive-figure-suit {
-  fill: #15313b;
-  stroke: #0e242c;
-  stroke-width: 1;
-  stroke-linejoin: round;
-}
-
-/* The scoop and the princess seam off the shoulder — the two lines that make
-   it the suit in the photograph rather than a black shape. */
-.dive-figure-seam {
-  fill: none;
-  stroke: rgb(255 255 255 / 0.2);
-  stroke-width: 0.9;
-  stroke-linecap: round;
-}
-
-/* The far arm, the line of the hands, and the two marks that are all a face
-   gets at this size. Any more and she stops being a drawing. */
-.dive-figure-detail {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1;
-  stroke-linecap: round;
-  opacity: 0.5;
-}
-
-/* The brow carries more of the likeness than anything else this small, so it
-   is the one mark allowed to sit darker than the rest of the face. */
-.dive-figure-brow {
-  fill: none;
-  stroke: #5a3b2a;
-  stroke-width: 1.15;
-  stroke-linecap: round;
-  opacity: 0.72;
-}
-
-/* Root to ends rather than one brown: the length in the photograph is lifted
-   several shades by the sun at the bottom, and a flat fill is what made the
-   first cut read as a wig. The gradient is declared inside the figure's own
-   SVG and spans the whole drop, so the crown stays dark and the ends warm.
-   The solid after the url() is the fallback if the paint server is missed. */
-.dive-hair-mass {
-  fill: url(#dive-hair-grad) #7d5540;
-  stroke: #5a3b2a;
-  stroke-width: 0.9;
-  stroke-linejoin: round;
-}
-
-.dive-hair-strands {
-  fill: none;
-  stroke: #b08359;
-  stroke-width: 0.8;
-  stroke-linecap: round;
-  opacity: 0.55;
-}
-
-/* The only part of her the air is allowed to move — the length, swinging
-   from the nape. What is on her head stays on her head. */
-.dive-hair-fall {
-  transform-box: view-box;
-  transform-origin: 56px 56px;
-  animation: dive-hair-lift var(--dive-ms, 16000ms) ease-out forwards;
-}
-
-@keyframes dive-hair-lift {
-  0%,
-  14% {
-    transform: rotate(0deg);
-  }
-  40% {
-    transform: rotate(-5deg);
-  }
-  66.7% {
-    transform: rotate(-9deg);
-  }
-  100% {
-    transform: rotate(-4deg);
-  }
+  filter: drop-shadow(0 1px 3px rgb(17 48 58 / 0.28)) drop-shadow(0 0 1px rgb(17 48 58 / 0.22));
 }
 
 /* ---- the spray ---------------------------------------------------- */
@@ -2128,9 +2243,22 @@
 @media (max-width: 767.98px) {
   .dive-diver,
   .dive-diver-spray {
-    --diver-h: clamp(92px, 12.7svh, 127px);
-    --diver-track: clamp(165px, 53vw, 241px);
+    --diver-h: clamp(240px, 38.1svh, 381px);
+    /* Halved with the desktop board. The 130px floor is not cosmetic: the
+       track is what holds her off the right edge, and on a narrow, tall phone
+       — 344 wide against an 882 tall, where her height is drawn from the
+       height and her room from the width — a smaller board stands her far
+       enough right that she overhangs the screen before she has even jumped. */
+    --diver-track: clamp(130px, 30vw, 230px);
     --diver-top: 10svh;
+    /* Opened back up now the board is half the size. Halfway over she is
+       horizontal and spans her whole 38svh length sideways, which is most of
+       a phone's width on its own, so there is only a narrow window in which
+       neither her hands nor her toes are over an edge — and the smaller board
+       moved that window by starting her further right. -0.15 suited the wide
+       board and now throws her toes off the right; -0.5 sits in the middle of
+       the window from a 320 up to a 430. */
+    --dive-drift: calc(var(--diver-h) * -0.5);
     /* The crest box is 190px here rather than 300, so the foam rides closer to
        the sheet's edge and is higher up the screen at the same instant. */
     --dive-water: 73svh;

@@ -35,7 +35,7 @@ const ROLL = [2.1, 1.2, 2.6, 1.5, 1, 2.3, 1.7] as const;
 /**
  * Pick from one of those cycles. Their lengths are 4, 6, 5 and 7 — no two share
  * a factor, so a print repeats its exact combination of rate, tilt, drift and
- * turn only once every 420, which is to say never on a wall of nineteen.
+ * turn only once every 420, which is to say never on a wall of twenty.
  */
 function at<T>(values: readonly T[], index: number): T {
   return values[index % values.length] as T;
@@ -56,8 +56,8 @@ function at<T>(values: readonly T[], index: number): T {
  *
  * No `will-change` here, deliberately. The drifting objects can afford the hint
  * because they unmount once they are well clear of the viewport, which is what
- * drops it again; these nineteen stay mounted for the life of the page, and
- * nineteen promoted layers holding full-size photographs is a standing cost
+ * drops it again; these twenty stay mounted for the life of the page, and
+ * twenty promoted layers holding full-size photographs is a standing cost
  * for a hint the compositor does not need to animate a transform.
  */
 function Print({ photo, index }: { photo: TravelPhoto; index: number }) {
@@ -119,11 +119,11 @@ function Print({ photo, index }: { photo: TravelPhoto; index: number }) {
  * Two of these prints also fall down the gutter beside the About prose from
  * 1024px up, and carry `data-gutter` so that styles.css can stand them down
  * here, so the same photograph is never on screen twice. Below that width
- * there is no gutter and the wall carries all nineteen.
+ * there is no gutter and the wall carries all twenty.
  */
 export function TravelWall() {
   return (
-    // A printed résumé has no use for nineteen holiday photographs.
+    // A printed résumé has no use for twenty holiday photographs.
     <div data-print="hide">
       {/* This gap is also the bottom of the runway the two gutter prints
           fall down — they need room to rise and rock clear of both the links

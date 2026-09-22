@@ -2,27 +2,40 @@ import { useEffect, useRef, useState, type CSSProperties, type RefObject } from 
 
 import { experience, type Role } from "@/data/experience";
 import { workPhotos } from "@/data/work";
+import { Fold } from "./Fold";
 import { Section } from "./Section";
 import { Rise, RiseItem } from "./depth/Rise";
 import { WorkReel } from "./WorkReel";
 
 export function Experience() {
+  // One entry open at a time: the key of whichever role is showing its
+  // soundings, or null for a column of closed headers.
+  const [open, setOpen] = useState<string | null>(null);
+
   return (
     <Section id="experience" title="Experience" band="experience">
       <WorkReel photos={workPhotos} />
       <div className="space-y-14">
-        {experience.map((role) => (
-          <RoleEntry key={`${role.employer}-${role.dates}`} role={role} />
-        ))}
+        {experience.map((role) => {
+          const key = `${role.employer}-${role.dates}`;
+          return (
+            <RoleEntry
+              key={key}
+              role={role}
+              open={open === key}
+              onToggle={() => setOpen((current) => (current === key ? null : key))}
+            />
+          );
+        })}
       </div>
     </Section>
   );
 }
 
-function RoleEntry({ role }: { role: Role }) {
+function RoleEntry({ role, open, onToggle }: { role: Role; open: boolean; onToggle: () => void }) {
   const bodyRef = useRef<HTMLDivElement>(null);
   const footRef = useRef<HTMLLIElement>(null);
-  const stop = usePictureStop(bodyRef, footRef, role.imageStop);
+  const stop = usePictureStop(bodyRef, footRef, role.imageStop, open);
 
   // Spread rather than pass undefined: exactOptionalPropertyTypes is on.
   const stopProps =
@@ -61,6 +74,8 @@ function RoleEntry({ role }: { role: Role }) {
           </RiseItem>
         )}
 
+        {/* The line about the company stays out on deck whatever the panel is
+            doing: it says who the employer is, not what the work was. */}
         {role.context && (
           <RiseItem
             as="p"
@@ -71,23 +86,25 @@ function RoleEntry({ role }: { role: Role }) {
         )}
 
         <RiseItem className="relative mt-5">
-          <ul className="space-y-3 sm:pl-6">
-            {role.projects.map((p, i) => (
-              <li
-                key={p.summary}
-                ref={i + 1 === role.imageStop ? footRef : undefined}
-                className="relative sm:pl-5"
-              >
-                <span
-                  aria-hidden="true"
-                  className="absolute left-0 top-[0.7em] hidden h-px w-3 bg-sound/60 sm:block"
-                />
-                <p className="measure leading-relaxed text-bone">
-                  <Summary {...p} />
-                </p>
-              </li>
-            ))}
-          </ul>
+          <Fold label="Click here to see the job description" open={open} onToggle={onToggle}>
+            <ul className="space-y-3 pt-4 sm:pl-6">
+              {role.projects.map((p, i) => (
+                <li
+                  key={p.summary}
+                  ref={i + 1 === role.imageStop ? footRef : undefined}
+                  className="relative sm:pl-5"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="absolute left-0 top-[0.7em] hidden h-px w-3 bg-sound/60 sm:block"
+                  />
+                  <p className="measure leading-relaxed text-bone">
+                    <Summary {...p} />
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </Fold>
         </RiseItem>
       </div>
     </Rise>
@@ -100,18 +117,26 @@ function RoleEntry({ role }: { role: Role }) {
  * offsets rather than from a client rect, because the writing is still carrying
  * its rise transform the first time this runs, and a transform moves what the
  * rect reports without moving the layout underneath it.
+ *
+ * Only while the panel is open. Folded away, the bullet it measures to is
+ * clipped to nothing, and a stop of zero would take the picture with it — so
+ * the stop is dropped and the picture runs the depth of the closed entry.
  */
 function usePictureStop(
   bodyRef: RefObject<HTMLElement | null>,
   footRef: RefObject<HTMLElement | null>,
   imageStop: number | undefined,
+  open: boolean,
 ): number | null {
   const [stop, setStop] = useState<number | null>(null);
 
   useEffect(() => {
     const body = bodyRef.current;
     const foot = footRef.current;
-    if (!imageStop || !body || !foot) return;
+    if (!imageStop || !open || !body || !foot) {
+      setStop(null);
+      return;
+    }
 
     const measure = () => {
       let top = 0;
@@ -132,7 +157,7 @@ function usePictureStop(
     observer.observe(body);
     observer.observe(foot);
     return () => observer.disconnect();
-  }, [bodyRef, footRef, imageStop]);
+  }, [bodyRef, footRef, imageStop, open]);
 
   return stop;
 }

@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 /**
  * Full-bleed cover image opening the homepage.
  *
@@ -10,10 +12,17 @@
  * flat 520px did.
  *
  * Phones crop in and bias right, keeping the subject whole on a narrow screen.
+ *
+ * `diving` empties it, on the same clock as the writing below. The dive waits
+ * for both — see CLEAR_MS in Dive.tsx and `.beach-banner` in styles.css.
  */
-export function Banner() {
+export function Banner({ diving = false, style }: { diving?: boolean; style?: CSSProperties }) {
   return (
-    <div className="reveal relative isolate overflow-hidden" style={{ animationDelay: "0ms" }}>
+    <div
+      className="beach-banner reveal relative isolate overflow-hidden"
+      data-diving={diving || undefined}
+      style={{ animationDelay: "0ms", ...style }}
+    >
       <img
         src="/banner.jpg"
         srcSet="/banner-1200.jpg 1200w, /banner.jpg 2079w"

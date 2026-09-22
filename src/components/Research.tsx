@@ -1,7 +1,39 @@
-import { research, type ResearchLab } from "@/data/research";
+import { useState } from "react";
+
+import { research, type ResearchBeat, type ResearchLab } from "@/data/research";
+import { Fold } from "./Fold";
 import { Section } from "./Section";
 import { Rise, RiseItem } from "./depth/Rise";
 import { PipelineFigure } from "./depth/PipelineFigure";
+
+/**
+ * One beat of a write-up: the heading stays out on deck, the writing under it
+ * folds away. The folds are independent of one another — the beats are one
+ * argument read in order, so opening the next is no reason to take the last
+ * one back.
+ */
+function Beat({ beat }: { beat: ResearchBeat }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Rise className="border-l border-sound/50 pl-5">
+      <RiseItem as="p" className="font-display text-h3 text-sound">
+        {beat.label}
+      </RiseItem>
+      <RiseItem className="mt-2">
+        <Fold label="Click here to read more" open={open} onToggle={() => setOpen((o) => !o)}>
+          <div className="space-y-2 pt-3">
+            {beat.body.split("\n\n").map((paragraph, i) => (
+              <p key={i} className="measure leading-relaxed text-bone">
+                {paragraph}
+              </p>
+            ))}
+          </div>
+        </Fold>
+      </RiseItem>
+    </Rise>
+  );
+}
 
 function Lab({ lab }: { lab: ResearchLab }) {
   return (
@@ -37,20 +69,7 @@ function Lab({ lab }: { lab: ResearchLab }) {
 
               <div className="mt-8 space-y-7">
                 {lab.beats.map((beat) => (
-                  <Rise key={beat.label} className="border-l border-sound/50 pl-5">
-                    <RiseItem as="p" className="font-display text-h3 text-sound">
-                      {beat.label}
-                    </RiseItem>
-                    {beat.body.split("\n\n").map((paragraph, i) => (
-                      <RiseItem
-                        key={i}
-                        as="p"
-                        className="measure mt-2 leading-relaxed text-bone"
-                      >
-                        {paragraph}
-                      </RiseItem>
-                    ))}
-                  </Rise>
+                  <Beat key={beat.label} beat={beat} />
                 ))}
               </div>
             </div>

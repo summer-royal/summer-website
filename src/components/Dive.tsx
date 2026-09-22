@@ -8,7 +8,20 @@ import { useDepth } from "./depth/DepthContext";
 const OCEAN_PATH = "/dive";
 
 /**
- * When the page changes over, measured from the press.
+ * How long the beach takes to empty, and how long the dive waits for it.
+ *
+ * The press clears the sand *and* the cover art above it, and only then does
+ * the water come up. It has to be that order: the diver stands at 12svh and
+ * the board sits at about 25svh, both of them inside the banner, so with the
+ * art still up she springs off a plank planted in the Main Quad.
+ *
+ * It reaches the stylesheet as `--beach-clear`, so the fades cannot fall out
+ * of step with the wait here.
+ */
+export const CLEAR_MS = 480;
+
+/**
+ * When the page changes over, measured from the moment the tide is raised.
  *
  * By then the crest has just reached the top of the screen, so the whole
  * viewport is under water and the beach gives way to Experience beneath it
@@ -22,9 +35,10 @@ const SWAP_MS = 2666;
  * across it.
  *
  * The beach is a page of its own with nothing below it, so a reader cannot
- * scroll on into Experience — they go in by pressing this. The press raises
- * the tide and changes the page under it; the tide lives above both pages, so
- * it carries on draining over the one it delivered the reader to.
+ * scroll on into Experience — they go in by pressing this. The press empties
+ * the beach, then raises the tide and changes the page under it; the tide
+ * lives above both pages, so it carries on draining over the one it delivered
+ * the reader to.
  *
  * The button is a real link to that page, so it works before hydration and
  * with no JavaScript at all, and a modified click still opens a new tab the
@@ -37,18 +51,18 @@ export function DiveButton({ onDive }: { onDive?: () => void }) {
   const { mode } = useDepth();
   const raiseTide = useTide();
   const navigate = useNavigate();
-  const swapRef = useRef<number | null>(null);
+  const timersRef = useRef<number[]>([]);
 
   useEffect(
     () => () => {
-      if (swapRef.current !== null) clearTimeout(swapRef.current);
+      timersRef.current.forEach(clearTimeout);
     },
     [],
   );
 
   const dive = useCallback(() => {
     // Already going in: a second press has nothing left to do.
-    if (swapRef.current !== null) return;
+    if (timersRef.current.length > 0) return;
 
     const cross = () => {
       navigate({ to: OCEAN_PATH });
@@ -59,11 +73,15 @@ export function DiveButton({ onDive }: { onDive?: () => void }) {
       return;
     }
 
-    // The beach clears, the water comes up, and the page changes under it —
-    // one press, and all three are on the same clock.
+    // The beach clears, then the water comes up, and the page changes under
+    // it — one press, and all three are on the same clock. The tide is held
+    // back the length of the clearing rather than started with it, which is
+    // what leaves the dive a bare beach to happen on.
     onDive?.();
-    raiseTide();
-    swapRef.current = window.setTimeout(cross, SWAP_MS);
+    timersRef.current.push(
+      window.setTimeout(raiseTide, CLEAR_MS),
+      window.setTimeout(cross, CLEAR_MS + SWAP_MS),
+    );
   }, [mode, navigate, onDive, raiseTide]);
 
   return (

@@ -1,14 +1,16 @@
 /**
  * The toolkit, grouped the way the CV groups it.
  *
- * Four registers rather than one flat cloud: what she writes code in, what she
- * does with it, what she does it inside, and the subject matter she does it to.
- * `note` is the one line that says why the group is here at all — a list of
- * nouns tells a reader nothing on its own.
+ * Five registers rather than one flat cloud: what she writes code in, the model
+ * families she reaches for, how she trains them, what she trains them inside,
+ * and the subject matter she points them at. `note` is the optional one line
+ * that says why a group is here at all — a list of nouns tells a reader nothing
+ * on its own.
  */
 export interface SkillGroup {
   label: string;
   items: string[];
+  note?: string;
 }
 
 export const skills: SkillGroup[] = [
@@ -21,23 +23,60 @@ export const skills: SkillGroup[] = [
     items: [
       "Machine learning",
       "Deep learning",
+      "Convolutional Neural Network (CNN)",
+      "Transfer learning",
+      "Random Forest Classifier",
+      "Attention MIL",
+      "Bayesian inference",
+      "Computer vision",
+      "Natural Language Processing (NLP)",
       "LLMs",
       "Signal processing",
-      "Computer vision",
       "Data analysis",
     ],
   },
   {
+    label: "TRAINING & REINFORCEMENT",
+    items: [
+      "Supervised Fine-Tuning (SFT)",
+      "Group Relative Policy Optimization (GRPO)",
+      "Model distillation",
+      "Curriculum learning",
+      "Reinforcement Learning (RL)",
+      "Q-Learning",
+      "Value iteration",
+    ],
+  },
+  {
     label: "FRAMEWORKS & PLATFORMS",
-    items: ["VS Code", "Cursor", "Unity", "Apple HealthKit", "Google Colab"],
+    items: [
+      "CLAM",
+      "UNI",
+      "CONCH",
+      "LAB-Bench",
+      "Unity",
+      "Apple HealthKit",
+      "Web app development",
+      "Accessibility",
+      "VS Code",
+      "Cursor",
+      "Google Colab",
+    ],
   },
   {
     label: "DOMAINS",
     items: [
       "Clinical NLP",
+      "Medical QA",
+      "Digital pathology",
       "Medical imaging",
+      "EEG",
+      "Brain-Computer Interfaces (BCIs)",
       "Biosignals",
       "Digital health",
+      "EHR integration",
+      "Advance care planning",
+      "Medical ethics",
       "Computational biology",
       "Autonomous vehicles",
     ],

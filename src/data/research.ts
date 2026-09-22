@@ -65,7 +65,7 @@ export const research: ResearchLab[] = [
         body: "Once the labeling scheme was finalized, Dr. Mohana Roy reviewed the LLM's output against the notes, so the labels are clinician-validated rather than model-asserted. That gives a way to count neurotoxicity from what clinicians actually wrote, not only from what was coded, which is the groundwork for earlier screening and for trials that can measure it.",
       },
       {
-        label: "Predicting it before treatment",
+        label: "Predicting neurotoxicity before treatment",
         body: "In addition to developing the symptom labeling scheme, I built a model that flags patients at elevated risk of chemotherapy-induced neurotoxicity before treatment begins. This allows physicians to weigh the risks when recommending a regimen. I compared candidate models on hazard ratios, correlated features, and clinical impact, and wrote the model cards that document performance, fairness, and limitations for interpretability.",
       },
     ],

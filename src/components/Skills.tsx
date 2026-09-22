@@ -19,12 +19,14 @@ export function Skills() {
             <RiseItem as="h3" className="text-micro tracking-[0.18em] text-sound">
               {group.label}
             </RiseItem>
-            <RiseItem
-              as="p"
-              className="measure mt-3 text-fine leading-relaxed text-muted-foreground"
-            >
-              {group.note}
-            </RiseItem>
+            {group.note ? (
+              <RiseItem
+                as="p"
+                className="measure mt-3 text-fine leading-relaxed text-muted-foreground"
+              >
+                {group.note}
+              </RiseItem>
+            ) : null}
             <RiseItem className="mt-4 flex flex-wrap gap-2">
               {group.items.map((item) => (
                 <span

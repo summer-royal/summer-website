@@ -16,7 +16,7 @@ export const currentlyReading: Book[] = [
   {
     title: "Algorithms to Live By: The Computer Science of Human Decisions",
     author: "Brian Christian and Tom Griffiths",
-    coverUrl: null,
+    coverUrl: "/books/algorithms-to-live-by.jpg",
     dateStarted: "2026-07-28T00:00:00.000Z",
     progressPercent: 62,
     shelf: "currently-reading",
@@ -25,7 +25,7 @@ export const currentlyReading: Book[] = [
   {
     title: "Revenge of the Tipping Point",
     author: "Malcolm Gladwell",
-    coverUrl: null,
+    coverUrl: "/books/revenge-of-the-tipping-point.jpg",
     dateStarted: "2026-08-19T00:00:00.000Z",
     progressPercent: 34,
     shelf: "currently-reading",

@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 
 import { profileLinks, site } from "@/data/site";
 import { Banner } from "./Banner";
 import { ProfileIcon } from "./ProfileIcon";
-import { DiveButton } from "./Dive";
+import { CLEAR_MS, DiveButton } from "./Dive";
 import { DepthBand } from "./depth/DepthBand";
+import { TypedName } from "./TypedName";
 
 /**
  * The beach — the whole of the first page.
@@ -14,30 +15,37 @@ import { DepthBand } from "./depth/DepthBand";
  * least a screen tall and clips at its foot, so the page ends on the beach
  * whatever the viewport, and nothing drifting in it can stretch the scroll.
  *
- * Pressing the dive empties it. Everything written on the sand goes, leaving
- * the banner, the beach, the board and the water — which is the picture the
- * dive was drawn for, and the only way the board and the copy stop sharing
- * the same few hundred pixels. The copy moves rather than the dive, because
- * the board has to stand a body's height clear of the water or there is no
- * dive left to watch.
+ * Pressing the dive empties it. The cover art and everything written on the
+ * sand go together, leaving the beach, the board and the water — which is the
+ * picture the dive was drawn for, and the only way the board and the copy stop
+ * sharing the same few hundred pixels. The copy moves rather than the dive,
+ * because the board has to stand a body's height clear of the water or there
+ * is no dive left to watch.
+ *
+ * The clearing runs before the dive rather than under it: the board and the
+ * diver both stand inside the banner, so the tide waits CLEAR_MS for the art
+ * to go. That one number reaches the fades below as `--beach-clear`.
  */
 export function Hero() {
   const [diving, setDiving] = useState(false);
+  const clearing = { "--beach-clear": `${CLEAR_MS}ms` } as CSSProperties;
 
   return (
     <DepthBand band="hero" className="min-h-svh overflow-clip">
-      <Banner />
+      <Banner diving={diving} style={clearing} />
       <div className="beach-stage">
         <div aria-hidden="true" data-print="hide" className="hero-surface" />
         <div
           className="beach-copy shell relative flex min-h-[46svh] flex-col justify-start pb-20 pt-3"
           data-diving={diving || undefined}
+          style={clearing}
         >
           <h1
+            aria-label={site.name}
             className="reveal text-h1 leading-[1.05] sm:text-display"
             style={{ animationDelay: "80ms" }}
           >
-            {site.name}
+            <TypedName text={site.name} />
           </h1>
           <p
             className="reveal measure mt-6 text-lede leading-relaxed sm:text-h3"

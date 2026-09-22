@@ -50,9 +50,7 @@ function Dive() {
       <DepthBand band="footer">
         <footer className="border-t border-border/60 py-10" data-print="hide">
           <div className="shell flex flex-wrap items-center justify-between gap-4 text-fine text-muted-foreground">
-            <p>
-              {site.name} — {site.location}
-            </p>
+            <p>{site.name}</p>
             <p className="flex flex-wrap gap-x-5 gap-y-2">
               <span className="inline-flex items-center gap-2">
                 <ProfileIcon label="Email" />

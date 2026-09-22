@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getCurrentlyReading, relativeTime, type Book } from "@/lib/goodreads";
 import { Section } from "./Section";
@@ -21,13 +22,16 @@ function Skeleton() {
 }
 
 function Cover({ book }: { book: Book }) {
-  if (book.coverUrl) {
+  const [failed, setFailed] = useState(false);
+
+  if (book.coverUrl && !failed) {
     return (
       <img
         src={book.coverUrl}
         alt=""
         loading="lazy"
         decoding="async"
+        onError={() => setFailed(true)}
         className="h-24 w-16 shrink-0 rounded-sm border border-border/70 object-cover"
       />
     );

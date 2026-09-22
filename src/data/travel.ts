@@ -23,7 +23,7 @@ export interface TravelPhoto {
   /**
    * Also drifts in the About gutter from 1024px up (see `src/data/objects.ts`).
    * The wall stands these two down at that width, because the gutter has
-   * them — below it there is no gutter, so the wall shows all nineteen.
+   * them — below it there is no gutter, so the wall shows all twenty.
    */
   gutter?: boolean;
 }
@@ -91,6 +91,14 @@ export const travelPhotos: TravelPhoto[] = [
     country: "USA",
     aspect: 1.333,
     gutter: true,
+  },
+  {
+    id: "portage",
+    src: "/photos/portage.jpg",
+    alt: "At the boat rail on Portage Lake, the glacier and low cloud behind.",
+    city: "Portage",
+    country: "USA",
+    aspect: 0.75,
   },
   {
     id: "honolulu",
